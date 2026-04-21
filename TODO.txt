@@ -1,0 +1,5 @@
+Features: 
+	1) Allow user to color ascii representation providing a certain gradiant, begining rgb -> final rgb
+		
+	2) Create C image resize
+	3) Create converter for most common image formats: png, jpeg, etc 
