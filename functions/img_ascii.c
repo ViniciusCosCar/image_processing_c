@@ -1,4 +1,4 @@
-char img_ascii(unsigned char *data, int datasize){
+int img_ascii(unsigned char *data, int datasize){
 	if(datasize<0) return 0;
 
 	// https://paulbourke.net/dataformats/asciiart/
