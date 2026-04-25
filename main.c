@@ -25,7 +25,7 @@ int main(int argc, char **argv){
 	"| 5 -> exit				  	|\n"
 	"|______________________________________________|\n"
 	"| Features to be implemented			|\n"
-	"| scale 	 	(pgm -> pgm)	   	|\n"
+	"| c_resize 	 	(pgm -> pgm)	   	|\n"
 	"| convert		(? -> ?)       	        |\n"
 	"-----------------------------------------------\n"
 	": "
@@ -35,7 +35,7 @@ int main(int argc, char **argv){
 	scanf("%d", &op);
 
 	switch(op){
-		case 1: // Execute python command to resize pgm
+		case 1: // Execute python command to resize pgm. Should be substituted by a C function
 
 			; // Label followed by a declaration is a C23 extension
 			char program[] = "python3 resize.py ";
@@ -117,10 +117,12 @@ int main(int argc, char **argv){
 
 		case 5: // Exit program
 			break;
+		case 6:
+			print_color(img,width,height);
+			break;
 
 		default:
-			fprintf(stderr, "Invalid option\n");
-
-		free(img);
+			fprintf(stderr, "Invalid option or not implemented function yet\n");
 	}
+	free(img);
 }
