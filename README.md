@@ -15,3 +15,6 @@
 *   **TODO**    if the task is to be implemented
 *   **BETA**    if the task is in progress
 *   **DONE**    if the task is finished
+
+#
+![Image of a Good Boy](/imgs/woof2.pgn "Woof!")
