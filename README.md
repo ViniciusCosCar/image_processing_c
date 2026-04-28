@@ -17,4 +17,4 @@
 *   **DONE**    if the task is finished
 
 #
-![Image of a Good Boy](/imgs/woof2.pgn "Woof!")
+![Image of a Good Boy](/imgs/woof2.png "Woof!")
