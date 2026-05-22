@@ -35,4 +35,4 @@ And the answer: "Because it is easier to generalize functions this way, like the
 Please follow the project's format (.clang-format file) before making requests
 
 #
-![Image of a Good Boy](/imgs/woof2.png "Woof!")
+![Image of a Good Boy](/input/woof2.png "Woof!")
