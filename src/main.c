@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "utils.c"
+#include "funcs/general.c"
+#include "funcs/netpbm.c"
 
 int main(int argc, char **argv)
 {
