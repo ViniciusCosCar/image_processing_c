@@ -1,2 +1,2 @@
-main :	functions/*.c main.c
-	gcc functions/*.c main.c -o main
+main :	src/main.c
+	gcc src/main.c -o main
