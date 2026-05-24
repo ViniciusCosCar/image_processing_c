@@ -1,18 +1,13 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "funcs/general.c"
-#include "funcs/netpbm.c"
+#include "lib/superIMG.h"
 
 int main(int argc, char **argv)
 {
         //      READ PGM FILE TO ARRAY
         //      ──────────────────────
-        int width, height;
-        unsigned char *img = readpgm(argv[1], &width, &height);
-
-        int imgsize = width * height;
+        const IMAGE img = image_read(argv[1]);
 
         //      ASK USER TO CHOOSE AN OPERATION
         //      ───────────────────────────────
@@ -75,72 +70,49 @@ int main(int argc, char **argv)
                         ; // Clean buffer
                 scanf("%2[^\n]", axis);
 
-                // Actual inversion
-                invert_img(img, width, height, axis);
-
-                // Write new image
-                writepgm(img, width, height, argv[2]);
+                // Invert and write new image
+                PGM_write(PGM_invert(img, axis), argv[2]);
 
                 break;
 
         case 3: //      BINARIZE PGM
                 //      ────────────
-
         ;
-                int limiar;
-                printf("Limiar: ");
-                scanf("%d", &limiar);
-                if (limiar < 0)
-                {
-                        fscanf(stderr, "invalid limiar value");
-                        exit(0);
-                }
-
-                // Binarize image
-                if (!img_bin(img, imgsize, limiar))
-                        fprintf(stderr, "binarizepgm: error in applaying function\n");
-
                 // Write bin file
-                writepgm(img, width, height, argv[2]);
+                PGM_write(PGM_binarize(img), argv[2]);
 
                 break;
 
-        case 4: //      ASCII ART OF PGM
-                //      ────────────────
-
-                // Transform pgm in ascii art
-                if (!img_ascii(img, imgsize))
-                        fprintf(stderr, "asciipgm: error in applaying function");
-
-                if (1)
-                {
-                        printf("Do something");
-                }
-
-                // Write ascii file
-                writeascii(img, width, height, argv[2]);
-
-                printf("Would you like to also print it?\n"
-                       "---------------------------\n"
-                       "| 1 -> Yes		   |\n"
-                       "| 2 -> No 		   |\n"
-                       "--------------------------|\n"
-                       ": ");
-                scanf("%d", &op);
-
-                // Print ascii art
-                if (op == 1)
-                        for (int i = 0; i < imgsize; printf("%c", img[i++]))
-                                if (i % width == 0)
-                                        printf("\n");
-                printf("\n");
-
-                break;
+                // case 4: //      ASCII ART OF PGM
+                //         //      ────────────────
+                //
+                //         // Transform pgm in ascii art
+                //         if (!img_ascii(img, imgsize))
+                //                 fprintf(stderr, "asciipgm: error in applaying function");
+                //
+                //         // Write ascii file
+                //         NETPBM_writeascii(img, width, height, argv[2]);
+                //
+                //         printf("Would you like to also print it?\n"
+                //                "---------------------------\n"
+                //                "| 1 -> Yes		   |\n"
+                //                "| 2 -> No 		   |\n"
+                //                "--------------------------|\n"
+                //                ": ");
+                //         scanf("%d", &op);
+                //
+                //         // Print ascii art
+                //         if (op == 1)
+                //                 for (int i = 0; i < imgsize; printf("%c", img[i++]))
+                //                         if (i % width == 0)
+                //                                 printf("\n");
+                //         printf("\n");
+                //
+                //         break;
 
         case 5: //      ACII COLORED VERSION OF PGM
                 //      ───────────────────────────
-                printf("\033[2J\033[H");
-                print_color(img, width, height);
+                image_print_colored(img);
 
                 break;
 
@@ -151,5 +123,6 @@ int main(int argc, char **argv)
 
         //      FREE ALLOCATED MEMORY
         //      ─────────────────────
-        free(img);
+
+        free(img.data);
 }
