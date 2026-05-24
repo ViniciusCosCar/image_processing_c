@@ -158,3 +158,30 @@ IMAGE PGM_invert(const IMAGE src_img, const char *axis)
 
         return (IMAGE){src_img.family, src_img.type, src_img.width, src_img.height, src_img.maxvalue, dest_data};
 }
+// ──────────────────────────────────────────────────────────
+// ─── CONVERT PGM TO ASCII TO IMAGE
+// ──────────────────────────────────────────────────────────
+IMAGE PGM_to_ascii(const IMAGE pgm)
+{
+        //      VERIFY ARGUMENTS
+        //      ────────────────
+        if (pgm.data == NULL || pgm.width < 0 || pgm.height < 0)
+        {
+                fprintf(stderr, "PGM_to_ascii: Inadequate pgm image provided");
+                exit(0);
+        }
+
+        //      ACTUAL CONVERSION
+        //      ─────────────────
+        // https://paulbourke.net/dataformats/asciiart/
+        // char illumination[] = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/()1{}[]?-_+~<>i!lI;:,`'. ";
+        char illumination[] = "@%#*+=-:. "; // Currently  uses 10 levels of grey
+        int scale_div = sizeof(illumination) / sizeof(char);
+        int datasize = pgm.width * pgm.height;
+        uint8_t *ascii_data = (uint8_t *)calloc(sizeof(uint8_t), datasize);
+
+        for (int i = 0; i < datasize; i++)
+                ascii_data[i] = illumination[(int)(pgm.data[i] * (scale_div - 1)) / 255];
+
+        return (IMAGE){ASCII_F, ASCII_TY, pgm.width, pgm.height, pgm.maxvalue, ascii_data};
+}

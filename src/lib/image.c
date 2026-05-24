@@ -1,6 +1,7 @@
 #include "superIMG.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 // ──────────────────────────────────────────────────────────
 
@@ -101,5 +102,37 @@ int image_write(const IMAGE img, const char *dest_fname)
                 }
         default:
                 return 0;
+        }
+}
+
+// ──────────────────────────────────────────────────────────
+// ─── C O N V E R T
+// ──────────────────────────────────────────────────────────
+IMAGE image_to_ascii(const IMAGE img)
+{
+        //      VERIFY ARGUMENTS
+        //      ────────────────
+        if (img.data == NULL || img.width < 0 || img.height < 0)
+        {
+                fprintf(stderr, "image_to_ascii: Invalid img provided\n");
+                exit(0);
+        }
+
+        //      USE THE APROPRIATE CONVERSION FUNCTION
+        //      ──────────────────────────────────────
+        switch (img.family)
+        {
+        case NETPBM_F:
+                switch (img.type)
+                {
+                case PGM_TY:
+                        return PGM_to_ascii(img);
+                default:
+                        fprintf(stderr, "image_to_ascii: Conversion function not developed yet\n");
+                        exit(0);
+                }
+        default:
+                fprintf(stderr, "image_to_ascii: Conversion function not developed yet\n");
+                exit(0);
         }
 }

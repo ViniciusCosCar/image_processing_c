@@ -11,6 +11,7 @@
 //
 enum Family
 {
+        ASCII_F,
         NETPBM_F,
         PNG_F,
         JPEG_F,
@@ -20,6 +21,8 @@ enum Family
 
 enum Type
 {
+        ASCII_TY,
+
         PGM_TY,
         PLAIN_PGM_TY,
 
@@ -34,7 +37,7 @@ enum Type
 
 } typedef Type;
 //
-// ──────────────────────────────────────────────── II ─────────────
+// ─────────────────────────────────────────────────── II ──────────
 //  :::::: S T R U C T : :  :   :    :     :        :          :
 // ──────────────────────────────────────────────────────────────
 //
@@ -53,23 +56,23 @@ struct
 
 } typedef IMAGE;
 //
-// ────────────────────────────────────────────────── III ────────────────────────────
+// ──────────────────────────────────────────────────────────────────── III ──────────
 //  :::::: I M A G E   F U N C T I O N S : :  :   :    :     :        :          :
 // ────────────────────────────────────────────────────────────────────────────────
 //
 // ──────────────────────────────────────────────────────────
 // ─── I M A G E
 // ──────────────────────────────────────────────────────────
-Family image_get_family(const char *fname); // To be defined
+Family image_get_family(const char *fname); // TODO: Just returns NETPBM_F for now
 
 // ─── Read
 IMAGE image_read(const char *fname);
 
 // ─── Write
-int image_write(const IMAGE img, const char *dest_fname);
+int image_write(const IMAGE, const char *fname);
 
 // ─── Print colored image with ansii escape sequences
-int image_print_colored(const IMAGE img);
+int image_print_colored(const IMAGE);
 
 // ──────────────────────────────────────────────────────────
 // ─── N E T P B M
@@ -82,17 +85,16 @@ int PGM_write(const IMAGE, const char *dest_fname);
 IMAGE PGM_binarize(const IMAGE);
 IMAGE PGM_invert(const IMAGE, const char *axis);
 int PGM_print_colored(const IMAGE);
-// int PGM_to_ascii(const IMAGE src, char *dest);
 
-// ─── plain PGM
+// ─── plain PGM (TODO)
 int plain_PGM_write(const uint8_t *src_data, const char *dest_fname);
 int PLAIN_PGM_print_colored(const IMAGE);
 
-// ─── PPM
+// ─── PPM (TODO)
 int PPM_write(const uint8_t *src_data, const char *dest_fname);
 int PPM_print_colored(const IMAGE);
 
-// ─── plain PPM
+// ─── plain PPM (TODO)
 int plain_PPM_write(const uint8_t *src_data, const char *dest_fname);
 int PLAIN_PPM_print_colored(const IMAGE);
 
@@ -100,12 +102,22 @@ int PLAIN_PPM_print_colored(const IMAGE);
 // ──────────────────────────────────────────────────────────
 // ─── T E X T
 // ──────────────────────────────────────────────────────────
-
 // ─── ASCII
-// int ASCII_write(const unsigned char src, const char *dest_fname, const int width, const int height);
+int ASCII_write(const IMAGE, const char *);
+int ASCII_print(const IMAGE);
 
 //
-// ────────────────────────────────────────────────────────── IV ─────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────── IV ──────────
+//  :::::: C O N V E R S I O N   F U N C T I O N S : :  :   :    :     :        :          :
+// ──────────────────────────────────────────────────────────────────────────────────────────
+//
+IMAGE image_to_ascii(const IMAGE);
+
+// ─── PGM
+IMAGE PGM_to_ascii(const IMAGE);
+
+//
+// ────────────────────────────────────────────────────────────────────────────── V ──────────
 //  :::::: A U X I L I A R Y   F U N C T I O N S : :  :   :    :     :        :          :
 // ────────────────────────────────────────────────────────────────────────────────────────
 //

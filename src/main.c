@@ -17,16 +17,15 @@ int main(int argc, char **argv)
                "Which operation would you like to perform?	|\n"
                "------------------------------------------	|\n"
                "| 0 -> exit				  	|\n"
-               "| 1 -> resize 	 	(pgm -> pgm)	  	|\n"
-               "| 2 -> invert		(pgm -> pgm) 	  	|\n"
-               "| 3 -> binarize 	(pgm -> pgm)    	|\n"
-               "| 4 -> ascii 	 	(pgm -> txt)	  	|\n"
+               "| 1 -> resize 	 	            	  	|\n"
+               "| 2 -> invert		             	  	|\n"
+               "| 3 -> binarize 	                	|\n"
+               "| 4 -> ascii 	 	            	  	|\n"
                "|						|\n"
                "| BETA						|\n"
-               "| 5 -> print colored	(pgm -> nothing) 	|\n"
+               "| 5 -> print colored	                 	|\n"
                "|______________________________________________|\n"
                "| TODO						|\n"
-               "| convert		(? -> ?)       	        |\n"
                "| c_resize 	 	(? -> ?)	   	|\n"
                "-----------------------------------------------\n"
                ": ");
@@ -84,32 +83,28 @@ int main(int argc, char **argv)
 
                 break;
 
-                // case 4: //      ASCII ART OF PGM
-                //         //      ────────────────
-                //
-                //         // Transform pgm in ascii art
-                //         if (!img_ascii(img, imgsize))
-                //                 fprintf(stderr, "asciipgm: error in applaying function");
-                //
-                //         // Write ascii file
-                //         NETPBM_writeascii(img, width, height, argv[2]);
-                //
-                //         printf("Would you like to also print it?\n"
-                //                "---------------------------\n"
-                //                "| 1 -> Yes		   |\n"
-                //                "| 2 -> No 		   |\n"
-                //                "--------------------------|\n"
-                //                ": ");
-                //         scanf("%d", &op);
-                //
-                //         // Print ascii art
-                //         if (op == 1)
-                //                 for (int i = 0; i < imgsize; printf("%c", img[i++]))
-                //                         if (i % width == 0)
-                //                                 printf("\n");
-                //         printf("\n");
-                //
-                //         break;
+        case 4: { //      ASCII ART OF PGM
+                  //      ────────────────
+
+                // ─── Transform in ascii art
+                const IMAGE img_ascii = image_to_ascii(img);
+
+                // ─── Write ascii file
+                ASCII_write(img_ascii, argv[2]);
+
+                printf("Would you like to also print it?\n"
+                       "---------------------------\n"
+                       "| 1 -> Yes		   |\n"
+                       "| 2 -> No 		   |\n"
+                       "--------------------------|\n"
+                       ": ");
+                scanf("%d", &op);
+
+                // ─── Print ascii image
+                ASCII_print(img_ascii);
+
+                break;
+        }
 
         case 5: //      ACII COLORED VERSION OF PGM
                 //      ───────────────────────────
