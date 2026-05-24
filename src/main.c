@@ -68,6 +68,7 @@ int main(int argc, char **argv)
                 char axis[] = "yx";
                 while (getchar() != '\n')
                         ; // Clean buffer
+                printf("Axis: ");
                 scanf("%2[^\n]", axis);
 
                 // Invert and write new image

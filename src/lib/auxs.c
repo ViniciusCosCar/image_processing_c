@@ -27,7 +27,7 @@ int invert_array(uint8_t *array, int bufsize)
                 return 0;
 
         for (int i = 0, j = bufsize - 1; i < j; i++, j--)
-                swap(&array[i++], &array[j--]);
+                swap(&array[i], &array[j]);
 
         return 1;
 }

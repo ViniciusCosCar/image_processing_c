@@ -68,6 +68,7 @@ int PGM_print_colored(IMAGE img)
                 if (i % img.width == 0)
                         printf("\n");
         }
+        printf("\n");
 
         return 1;
 }

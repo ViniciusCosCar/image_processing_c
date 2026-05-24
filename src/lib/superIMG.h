@@ -78,7 +78,7 @@ void NETPBM_readprint_comments(const FILE *);
 IMAGE NETPBM_read(const char *fname);
 
 // ─── PGM
-int PGM_write(IMAGE, const char *dest_fname);
+int PGM_write(const IMAGE, const char *dest_fname);
 IMAGE PGM_binarize(const IMAGE);
 IMAGE PGM_invert(const IMAGE, const char *axis);
 int PGM_print_colored(const IMAGE);
