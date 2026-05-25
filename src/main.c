@@ -20,13 +20,13 @@ int main(int argc, char **argv)
                         break;
 
                 case CONVERT:
-                        fprintf(stderr, "main: option not implemented yet\n");
-                        // menu_convert();
+                        menu_convert(img, argv);
                         break;
 
                 case VIEW:
-                        fprintf(stderr, "main: option not implemented yet\n");
-                        // menu_view();
+                        image_print(img);
+                        while (getchar() != '\n')
+                                ;
                         break;
                 }
         };

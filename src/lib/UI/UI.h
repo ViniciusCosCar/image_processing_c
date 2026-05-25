@@ -31,7 +31,7 @@ enum
 // ──────────────────────────────────────────────────────────
 // ─── C O L O R S
 // ──────────────────────────────────────────────────────────
-static const char *WHITE = "\033[30;47m";
+static const char *WHITE = "\033[m\033[30;47m";
 static const char *RED_FG = "\033[31m";
 static const char *GREEN_FG = "\033[32m";
 static const char *BLUE_FG = "\033[34m";
@@ -51,7 +51,7 @@ static const char *CROSSED = "\033[9m";
 // ──────────────────────────────────────────────────────────
 Operation menu();
 void menu_transform(const IMAGE img, char **argv);
-void menu_convert();
-void menu_view();
+void menu_convert(const IMAGE img, char **argv);
+void menu_view(const IMAGE img);
 
 #endif

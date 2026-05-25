@@ -47,7 +47,7 @@ int PGM_write(IMAGE img, const char *fname)
 // ──────────────────────────────────────────────────────────
 // ─── PRINT COLORED PGM IMAGE WITH ANSII ESCAPE SEQUENCES
 // ──────────────────────────────────────────────────────────
-int PGM_print_colored(IMAGE img)
+int PGM_print(IMAGE img)
 {
         int datasize = img.width * img.height;
 
@@ -68,7 +68,7 @@ int PGM_print_colored(IMAGE img)
                 if (i % img.width == 0)
                         printf("\n");
         }
-        printf("\n");
+        printf("\033[m\n");
 
         return 1;
 }

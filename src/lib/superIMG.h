@@ -98,7 +98,6 @@ int PPM_print(const IMAGE);
 int plain_PPM_write(const uint8_t *src_data, const char *dest_fname);
 int PLAIN_PPM_print(const IMAGE);
 
-// int PGM_print(const uint8_t *buf, const int w, const int h, const int i);
 // ──────────────────────────────────────────────────────────
 // ─── T E X T
 // ──────────────────────────────────────────────────────────
