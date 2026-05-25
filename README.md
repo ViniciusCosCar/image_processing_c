@@ -4,9 +4,9 @@
 ## Menu
 |Status	| Task|
 |-------|--------|
-|🟧| Menu should start asking if user wants to 1: Apply an image transformation (like resize() or binarize()), 2: Convert (Should show only useful options, if input image is ascii, doesn't make sense to ask if the user would like to convert to ascii! Ask if they would like to convert to pgm or any other), 3: View (image_print_colored())
 |🟧| Add a file selection menu so that user doesn't need indicate the file paths in the arguments |
-|🟧| Use ansii escape sequances and termios.h to redesign the menu and have more control on the way the user interact with the menu, like turning input echo off and enter-less input: Be creative and have fun! =)|
+|🟧| Use ansii escape sequances and termios.h to redesign the menu and have more control on the way the user interact with the menu, like turning input echo off, enter-less input or cursor option selection: Be creative and have fun! =)|
+|🟩| Menu should start asking if user wants to 1: Apply an image transformation (like resize() or binarize()), 2: Convert (Should show only useful options, if input image is ascii, doesn't make sense to ask if the user would like to convert to ascii! Ask if they would like to convert to pgm or any other), 3: View (image_print())
 
 ## Image functions
 |Status	| Task|
@@ -15,7 +15,7 @@
 |🟧| Create C image resize function |
 |🟧| Add image rotation by a specified angle|
  
-|           |write()|binarize()|invert()|print_colored()|resize()|image_to_pgm()|image_to_plain_pgm()|image_to_ppm()|image_to_plain_ppm()|image_to_ascii()|
+|           |write()|binarize()|invert()|print()|resize()|image_to_pgm()|image_to_plain_pgm()|image_to_ppm()|image_to_plain_ppm()|image_to_ascii()|
 |-----------|-------|----------|--------|---------------|--------|--------------|--------------------|--------------|--------------------|----------------|
 | PGM       |  🟩   |    🟩    |   🟩   |       🟩      |   🟩   |              |          🟧        |      🟧      |         🟧         |       🟩       |
 | Plain PGM |  🟧   |    🟧    |   🟧   |       🟧      |   🟩   |      🟧      |                    |      🟧      |         🟧         |       🟧       |
