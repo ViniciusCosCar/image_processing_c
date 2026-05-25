@@ -11,7 +11,7 @@
 //
 enum Family
 {
-        ASCII_F,
+        ASCII_F = 1,
         NETPBM_F,
         PNG_F,
         JPEG_F,
@@ -21,7 +21,7 @@ enum Family
 
 enum Type
 {
-        ASCII_TY,
+        ASCII_TY = 1,
 
         PGM_TY,
         PLAIN_PGM_TY,
@@ -53,8 +53,8 @@ struct
         const int maxvalue;
 
         uint8_t *data;
-
 } typedef IMAGE;
+
 //
 // ──────────────────────────────────────────────────────────────────── III ──────────
 //  :::::: I M A G E   F U N C T I O N S : :  :   :    :     :        :          :
@@ -72,7 +72,7 @@ IMAGE image_read(const char *fname);
 int image_write(const IMAGE, const char *fname);
 
 // ─── Print colored image with ansii escape sequences
-int image_print_colored(const IMAGE);
+int image_print(const IMAGE);
 
 // ──────────────────────────────────────────────────────────
 // ─── N E T P B M
@@ -84,21 +84,21 @@ IMAGE NETPBM_read(const char *fname);
 int PGM_write(const IMAGE, const char *dest_fname);
 IMAGE PGM_binarize(const IMAGE);
 IMAGE PGM_invert(const IMAGE, const char *axis);
-int PGM_print_colored(const IMAGE);
+int PGM_print(const IMAGE);
 
 // ─── plain PGM (TODO)
 int plain_PGM_write(const uint8_t *src_data, const char *dest_fname);
-int PLAIN_PGM_print_colored(const IMAGE);
+int PLAIN_PGM_print(const IMAGE);
 
 // ─── PPM (TODO)
 int PPM_write(const uint8_t *src_data, const char *dest_fname);
-int PPM_print_colored(const IMAGE);
+int PPM_print(const IMAGE);
 
 // ─── plain PPM (TODO)
 int plain_PPM_write(const uint8_t *src_data, const char *dest_fname);
-int PLAIN_PPM_print_colored(const IMAGE);
+int PLAIN_PPM_print(const IMAGE);
 
-// int PGM_print_color(const uint8_t *buf, const int w, const int h, const int i);
+// int PGM_print(const uint8_t *buf, const int w, const int h, const int i);
 // ──────────────────────────────────────────────────────────
 // ─── T E X T
 // ──────────────────────────────────────────────────────────

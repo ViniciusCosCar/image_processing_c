@@ -15,7 +15,7 @@ Family image_get_family(const char *fname)
 }
 
 // ─── Print colored image
-int image_print_colored(const IMAGE img)
+int image_print(const IMAGE img)
 {
         //      VERIFY ARGUMENTS
         //      ────────────────
@@ -30,13 +30,15 @@ int image_print_colored(const IMAGE img)
         switch (img.type)
         {
         case PGM_TY:
-                return PGM_print_colored(img);
+                return PGM_print(img);
         // case PLAIN_PGM_TY:
         //         return PLAIN_PGM_print_colored(img);
         // case PPM_TY:
         //         return PPM_print_colored(img);
         // case PLAIN_PPM_TY:
         //         return PLAIN_PPM_print_colored(img);
+        case ASCII_TY:
+                return ASCII_print(img);
         default:
                 fprintf(stderr, "Feature not implemented yet for choose image format"
                                 " or option choosen does not match any options\n");
