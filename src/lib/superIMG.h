@@ -47,14 +47,29 @@ enum Type
 struct
 {
         const Family family;
-        const Type type;
-        const int width;
-        const int height;
-        const int maxvalue;
+        Type type;
+        int width;
+        int height;
+        int datasize;
+        int maxvalue;
 
-        uint8_t *data;
+        void *data;
 } typedef IMAGE;
 
+#define ASCII                                                                                                          \
+        {                                                                                                              \
+                .family = ASCII_F, .type = ASCII_TY, .data = (char *)NULL                                              \
+        }
+#define PGM                                                                                                            \
+        {                                                                                                              \
+                .family = NETPBM, .type = PGM_TY, .data = (uint8_t *)NULL                                              \
+        }
+
+static const IMAGE nullimg = {.family = UNKNOWN_F, .type = UNKNOWN_TY, .data = NULL};
+// #define nullimg                                                                                                        \
+//         {                                                                                                              \
+//                 .family = UNKNOWN_F, .type = UNKNOWN_TY, .data = NULL                                                  \
+//         }
 //
 // ──────────────────────────────────────────────────────────────────── III ──────────
 //  :::::: I M A G E   F U N C T I O N S : :  :   :    :     :        :          :
@@ -63,7 +78,7 @@ struct
 // ──────────────────────────────────────────────────────────
 // ─── I M A G E
 // ──────────────────────────────────────────────────────────
-Family image_get_family(const char *fname); // TODO: Just returns NETPBM_F for now
+Family image_detect_family(const char *fname); // TODO: Just returns NETPBM_F for now
 
 // ─── Read
 IMAGE image_read(const char *fname);
@@ -101,6 +116,8 @@ int PLAIN_PPM_print(const IMAGE);
 // ──────────────────────────────────────────────────────────
 // ─── T E X T
 // ──────────────────────────────────────────────────────────
+IMAGE ASCII_read(const char *fname);
+
 // ─── ASCII
 int ASCII_write(const IMAGE, const char *);
 int ASCII_print(const IMAGE);

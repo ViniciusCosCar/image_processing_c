@@ -1,61 +1,114 @@
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "superIMG.h"
 
 // ──────────────────────────────────────────────────────────
+// ─── READ ASCII FILE
+// ──────────────────────────────────────────────────────────
+IMAGE ASCII_read(const char *fname)
+{
+        //      OPEN FILE
+        //      ─────────
+        FILE *fp = fopen(fname, "rb");
+        if (fp == NULL)
+        {
+                fprintf(stderr, "ASCII_read: it was not possible to read ascii file\n");
+                return nullimg;
+        }
+        //      READ FILE
+        //      ─────────
+        IMAGE img = ASCII;
+
+        // ─── Find datasize
+        fseek(fp, 0, SEEK_END);
+        img.datasize = ftell(fp); // Store datasize
+
+        if (img.datasize < 0)
+        {
+                fprintf(stderr, "ASCII_read: it was not possible to read ascii file");
+                fclose(fp);
+                return nullimg;
+        }
+
+        img.data = malloc(img.datasize); // Allocate sufficient memory
+        if (img.data == NULL)
+        {
+                fprintf(stderr, "ASCII_read: it was not possible to allocate space for ascii file");
+                fclose(fp);
+                return nullimg;
+        }
+
+        // ─── Copy data to data buffer
+        fseek(fp, 0, SEEK_SET);
+        if (fread(img.data, sizeof(char), img.datasize, fp) != img.datasize)
+        {
+                fprintf(stderr, "ASCII_read: it was not sucessfull in copying all data from provided file");
+                fclose(fp);
+                free(img.data);
+                return nullimg;
+        }
+
+        fclose(fp);
+        return img;
+}
+
+// ──────────────────────────────────────────────────────────
 // ─── WRITE ASCII FILE BASED ON DATA SOURCE PROVIDED
 // ──────────────────────────────────────────────────────────
-int ASCII_write(const IMAGE src, const char *fname)
+int ASCII_write(const IMAGE img, const char *fname)
 {
         //      VERIFY INPUT
         //      ────────────
-        if (src.data == NULL || src.width < 0 || src.height < 0 || fname == NULL)
+        if (img.data == NULL || img.datasize < 0 || fname == NULL)
+        {
+                fprintf(stderr, "ASCII_write: it was not possible to write ascii file");
                 return 0;
+        }
 
         //      OPEN FILE
         //      ─────────
-        FILE *dest_f;
-        if (!(dest_f = fopen(fname, "w")))
+        FILE *fp;
+        if (!(fp = fopen(fname, "w")))
         {
                 fprintf(stderr, "ASCII_write: error creating txt file\n");
-                exit(0);
+                return 0;
         }
 
         //      WRITE TO FILE
         //      ─────────────
-        int datasize = src.width * src.height;
-        for (int i = 0; i < datasize; fprintf(dest_f, "%c", src.data[i++]))
-                if (i % src.width == 0)
-                        fprintf(dest_f, "\n");
+        if (fwrite(((char *)img.data), sizeof(char), img.datasize, fp) != img.datasize)
+        {
+                fprintf(stderr, "ASCII_write: it was not possible to write all data to output file");
+                return 0;
+        }
 
         //      END CORRECTLY
         //      ─────────────
-        fclose(dest_f);
+        fclose(fp);
 
         fprintf(stderr, "%s successfully created\n", fname);
         return 1;
 }
-
+// ──────────────────────────────────────────────────────────
+// ─── PRINT
+// ──────────────────────────────────────────────────────────
 int ASCII_print(const IMAGE img)
 {
         //      VERIFY INPUT
         //      ────────────
-        if (img.data == NULL || img.width < 0 || img.height < 0)
+        if (img.data == NULL || img.datasize < 0)
         {
                 fprintf(stderr, "ASCII_print: It was not possible to print ascii image\n");
-                exit(0);
+                return 0;
         }
 
         //      PRINT ASCII IMAGE
         //      ─────────────────
-        int datasize = img.width * img.height;
-        for (int i = 0; i < datasize; i++)
-        {
-                printf("%c", img.data[i]);
+        // ─── Works if provided image's data is not null terminated
+        for (int i = 0; i < img.datasize; printf("%c", ((char *)img.data)[i++]))
+                ;
 
-                if (i % img.width == 0)
-                        printf("\n");
-        }
         printf("\n");
 
         return 1;

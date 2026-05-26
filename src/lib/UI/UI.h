@@ -15,14 +15,6 @@ enum
         VIEW
 
 } typedef Operation;
-enum
-{
-        RESIZE = 1,
-        INVERT,
-        BINARIZE,
-        ASCII
-
-} typedef Transformation;
 //
 // ───────────────────────────────────────────────────────── II ──────────
 //  :::::: C O N S T A N T S : :  :   :    :     :        :          :

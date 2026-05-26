@@ -87,7 +87,7 @@ void menu_transform(const IMAGE img, char **argv)
                         //      ───────
                         return;
 
-                case RESIZE: //      RESIZE IMAGE
+                case 1: //      RESIZE IMAGE
                         //      ────────────
 
                         printf("hello");
@@ -107,8 +107,8 @@ void menu_transform(const IMAGE img, char **argv)
                         free(s);
                         break;
 
-                case INVERT: //      INVERT IMAGE
-                             //      ────────────
+                case 2: //      INVERT IMAGE
+                        //      ────────────
                 ;
                         char axis[] = "yx";
                         while (getchar() != '\n')
@@ -121,8 +121,8 @@ void menu_transform(const IMAGE img, char **argv)
 
                         break;
 
-                case BINARIZE: //      BINARIZE PGM
-                               //      ────────────
+                case 3: //      BINARIZE PGM
+                        //      ────────────
                 ;
                         // Write bin file
                         PGM_write(PGM_binarize(img), argv[2]);

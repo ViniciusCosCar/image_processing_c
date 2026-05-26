@@ -33,6 +33,5 @@ int main(int argc, char **argv)
 
         //      FREE ALLOCATED MEMORY
         //      ─────────────────────
-
         free(img.data);
 }

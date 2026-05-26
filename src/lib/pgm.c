@@ -16,12 +16,12 @@ int PGM_write(IMAGE img, const char *fname)
         if (img.data == NULL || fname == NULL)
         {
                 fprintf(stderr, "PGM_write: error reading image data or receiving file name\n");
-                exit(0);
+                return 0;
         }
         if (!(fp = fopen(fname, "wb")))
         {
                 fprintf(stderr, "PGM_write: error opening output file\n");
-                exit(0);
+                return 0;
         }
 
         //      WRITE PGM TO FILE
@@ -33,12 +33,11 @@ int PGM_write(IMAGE img, const char *fname)
         if (!fwrite(img.data, sizeof(uint8_t), img.width * img.height, fp))
         {
                 fprintf(stderr, "PGM_write: write error\n");
-                exit(0);
+                return 0;
         }
 
         //      RETURN AND FINISH SAFETLY
         //      ─────────────────────────
-
         fclose(fp);
         fprintf(stderr, "%s successfully created\n", fname);
 
@@ -49,11 +48,9 @@ int PGM_write(IMAGE img, const char *fname)
 // ──────────────────────────────────────────────────────────
 int PGM_print(IMAGE img)
 {
-        int datasize = img.width * img.height;
-
         //      VERIFY ARGUMENTS
         //      ────────────────
-        if (img.data == NULL || datasize < 0)
+        if (img.data == NULL || img.datasize < 0)
         {
                 fprintf(stderr, "PGM_write: error reading image data\n");
                 return 0;
@@ -61,9 +58,9 @@ int PGM_print(IMAGE img)
 
         //      PRINT COLORED IMAGE
         //      ───────────────────
-        for (int i = 0; i < datasize; i++)
+        for (int i = 0; i < img.datasize; i++)
         {
-                printf("\033[4%dm ", 7 * img.data[i] / 255);
+                printf("\033[4%dm ", 7 * ((uint8_t *)img.data)[i] / 255);
 
                 if (i % img.width == 0)
                         printf("\n");
@@ -94,94 +91,106 @@ int PGM_print(IMAGE img)
 // ──────────────────────────────────────────────────────────
 // ─── PRODUCE BINARIZED VERSION OF PGM PROVIDED
 // ──────────────────────────────────────────────────────────
-IMAGE PGM_binarize(const IMAGE src_img)
+IMAGE PGM_binarize(const IMAGE img)
 {
-        //      ────────────────
-        const int datasize = src_img.width * src_img.height;
-
         //      VERIFY ARGUMENTS
         //      ────────────────
-        if (src_img.data == NULL || src_img.width < 0 || src_img.height < 0)
-                return src_img;
+        if (img.data == NULL || img.datasize < 0)
+                return img;
 
         //      CALCULATE LIMIAR
         //      ────────────────
         int limiar = 0;
-        for (int i = 0; i < datasize; limiar += src_img.data[i++])
+        for (int i = 0; i < img.datasize; limiar += ((uint8_t *)img.data)[i++])
                 ;
-        limiar /= datasize;
+        limiar /= img.datasize;
 
         //      SET dest[i] TO BINARIZED PIXEL OF src[i]
         //      ────────────────────────────────────────
-        uint8_t *dest_data = (uint8_t *)calloc(sizeof(uint8_t), datasize);
-        for (int i = 0; i < datasize; i++)
-                if (src_img.data[i] < limiar)
-                        dest_data[i] = 0;
-                else
-                        dest_data[i] = 255;
+        IMAGE img_bin = img;
 
-        return (IMAGE){src_img.family, src_img.type, src_img.width, src_img.height, src_img.maxvalue, dest_data};
+        img_bin.data = malloc(img.datasize);
+        for (int i = 0; i < img.datasize; i++)
+                if (((uint8_t *)img.data)[i] < limiar)
+                        ((uint8_t *)img_bin.data)[i] = 0;
+                else
+                        ((uint8_t *)img_bin.data)[i] = 255;
+
+        return img_bin;
 }
 // ──────────────────────────────────────────────────────────
 // ─── INVERT PGM ALONGSIDE AN SPECIFIEDED AXIS
 // ──────────────────────────────────────────────────────────
-IMAGE PGM_invert(const IMAGE src_img, const char *axis)
+IMAGE PGM_invert(const IMAGE img, const char *axis)
 {
-        int datasize = src_img.width * src_img.height;
-        uint8_t *dest_data = (uint8_t *)calloc(sizeof(uint8_t), datasize);
+        IMAGE inv_img = img;
+        inv_img.data = malloc(img.datasize);
 
         //      VERIFY ARGUMENTS
         //      ────────────────
-        if (src_img.data == NULL || datasize < 0 || axis == NULL)
-                return src_img;
+        if (img.data == NULL || img.datasize < 0 || axis == NULL)
+                return img;
 
         //      COPY SRC TO DEST DATA BUFFER
         //      ────────────────────────────
-        cp(src_img.data, dest_data, datasize);
+        cp(img.data, inv_img.data, img.datasize);
 
         //      INVERT ALONG AXIS
         //      ─────────────────
         // ─── yx
         if (strcmp(axis, "yx") == 0 || strcmp(axis, "xy") == 0)
-                invert_array(dest_data, datasize);
+                invert_array(inv_img.data, img.datasize);
 
         // ─── x
         else if (strcmp(axis, "x") == 0)
-                for (int j = 0; j < src_img.width; j++)
-                        for (int i = 0, k = src_img.height - 1; i < k; i++, k--)
-                                swap(&dest_data[j + i * src_img.width], &dest_data[j + k * src_img.width]);
-
+                for (int j = 0; j < inv_img.width; j++)
+                        for (int i = 0, k = inv_img.height - 1; i < k; i++, k--)
+                                swap(&((uint8_t *)inv_img.data)[j + i * inv_img.width],
+                                     &((uint8_t *)inv_img.data)[j + k * inv_img.width]);
         // ─── y
         else if (strcmp(axis, "y") == 0)
-                for (int i = 0; i < src_img.height; i++)
-                        invert_array(dest_data + i * src_img.width, src_img.width);
+                for (int i = 0; i < inv_img.height; i++)
+                        invert_array(inv_img.data + i * inv_img.width, inv_img.width);
 
-        return (IMAGE){src_img.family, src_img.type, src_img.width, src_img.height, src_img.maxvalue, dest_data};
+        return inv_img;
 }
 // ──────────────────────────────────────────────────────────
 // ─── CONVERT PGM TO ASCII TO IMAGE
 // ──────────────────────────────────────────────────────────
-IMAGE PGM_to_ascii(const IMAGE pgm)
+IMAGE PGM_to_ascii(const IMAGE img)
 {
         //      VERIFY ARGUMENTS
         //      ────────────────
-        if (pgm.data == NULL || pgm.width < 0 || pgm.height < 0)
+        if (img.data == NULL || img.datasize < 0)
         {
-                fprintf(stderr, "PGM_to_ascii: Inadequate pgm image provided");
-                exit(0);
+                fprintf(stderr, "PGM_to_ascii: inadequate pgm image provided");
+                return img;
         }
 
         //      ACTUAL CONVERSION
         //      ─────────────────
         // https://paulbourke.net/dataformats/asciiart/
         // char illumination[] = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/()1{}[]?-_+~<>i!lI;:,`'. ";
-        char illumination[] = "@%#*+=-:. "; // Currently  uses 10 levels of grey
-        int scale_div = sizeof(illumination) / sizeof(char);
-        int datasize = pgm.width * pgm.height;
-        uint8_t *ascii_data = (uint8_t *)calloc(sizeof(uint8_t), datasize);
+        char illumination[] = "@%#*+=-:. ";                      // Currently  uses 10 levels of grey
+        int scale_div = sizeof(illumination) / sizeof(char) - 1; // -1 because of '\0'
 
-        for (int i = 0; i < datasize; i++)
-                ascii_data[i] = illumination[(int)(pgm.data[i] * (scale_div - 1)) / 255];
+        IMAGE ascii_img = ASCII;
+        ascii_img.datasize = img.datasize + img.height + 1; // + 1 -> '\0'
+        ascii_img.data = malloc(ascii_img.datasize);
 
-        return (IMAGE){ASCII_F, ASCII_TY, pgm.width, pgm.height, pgm.maxvalue, ascii_data};
+        for (int i = 0, j = 0, again = 0; i < ascii_img.datasize - 1; i++) // - 1 -> '\0'
+        {
+                if (j % img.width == 0 && again == 0)
+                {
+                        ((char *)ascii_img.data)[i] = '\n';
+                        again = 1;
+                        continue;
+                }
+
+                ((char *)ascii_img.data)[i] = illumination[(int)(((uint8_t *)img.data)[j++] * (scale_div - 1)) / 255];
+                again = 0;
+        }
+        ((char *)ascii_img.data)[ascii_img.datasize - 1] = '\0';
+
+        return ascii_img;
 }

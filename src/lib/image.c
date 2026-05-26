@@ -6,14 +6,124 @@
 // ──────────────────────────────────────────────────────────
 
 // ─── Get image family specification
-Family image_get_family(const char *fname)
+//      Supose that image files start immediatly with the header,
+//      containing no comments before it
+Family image_detect_family(const char *fname)
 {
-        //      TODO: Improve; it assumes to be NETPBM for now
-        //      ──────────────────────────────────────────────
+        //      OPEN FILE
+        //      ─────────
+        FILE *fp = fopen(fname, "rb");
+        if (fp == NULL)
+        {
+                fprintf(stderr, "image_detect_family: it was not possible to open file for reading");
+                return UNKNOWN_F;
+        }
 
-        return NETPBM_F;
+        //      DETECT FAMILY
+        //      ─────────────
+        /* ─── At this current moment, it detects
+                NEPTBM files, and consider anything
+                else to be an ascii image) */
+        char first_char;
+        fscanf(fp, "%c", &first_char);
+
+        if (first_char == 'P')
+                return NETPBM_F;
+
+        return ASCII_F;
 }
+// ──────────────────────────────────────────────────────────
+// ─── R E A D
+// ──────────────────────────────────────────────────────────
+// ─── Read image in file and return IMAGE object
+IMAGE image_read(const char *fname)
+{
+        //      VERIFY ARGUMENTS
+        //      ────────────────
+        if (fname == NULL)
+                return nullimg;
 
+        //      USE THE APROPRIATE READ FUNCTION
+        //      ────────────────────────────────
+        Family family = image_detect_family(fname);
+
+        switch (family)
+        {
+        case NETPBM_F:
+                return NETPBM_read(fname);
+        case ASCII_F:
+                return ASCII_read(fname);
+        default:
+                return nullimg;
+        }
+}
+// ──────────────────────────────────────────────────────────
+// ─── W R I T E
+// ──────────────────────────────────────────────────────────
+// ─── Write src data to data
+int image_write(const IMAGE img, const char *dest_fname)
+{
+        //      VERIFY ARGUMENTS
+        //      ────────────────
+        if (dest_fname == NULL)
+                return 0;
+
+        //      USE THE APROPRIATE READ FUNCTION
+        //      ────────────────────────────────
+        switch (img.family)
+        {
+        case NETPBM_F:
+                switch (img.type)
+                {
+                case PGM_TY:
+                        return PGM_write(img, dest_fname);
+                // case PLAIN_PGM_TY:
+                //         return plain_PGM_write(img.data, dest_fname);
+                // case PPM_TY:
+                //         return PPM_write(img.data, dest_fname);
+                // case PLAIN_PPM_TY:
+                //         return plain_PPM_write(img.data, dest_fname);
+                default:
+                        return 0;
+                }
+        default:
+                return 0;
+        }
+}
+// ──────────────────────────────────────────────────────────
+// ─── C O N V E R T
+// ──────────────────────────────────────────────────────────
+IMAGE image_to_ascii(const IMAGE img)
+{
+        //      VERIFY ARGUMENTS
+        //      ────────────────
+        if (img.data == NULL || img.width < 0 || img.height < 0)
+        {
+                fprintf(stderr, "image_to_ascii: invalid img provided\n");
+                return nullimg;
+        }
+
+        //      USE THE APROPRIATE CONVERSION FUNCTION
+        //      ──────────────────────────────────────
+        switch (img.family)
+        {
+        case NETPBM_F:
+                switch (img.type)
+                {
+                case PGM_TY:
+                        return PGM_to_ascii(img);
+                default:
+                        fprintf(stderr, "image_to_ascii: conversion function not developed yet\n");
+                        return nullimg;
+                }
+        default:
+                fprintf(stderr, "image_to_ascii: conversion function not developed yet\n");
+                return nullimg;
+        }
+}
+// ──────────────────────────────────────────────────────────
+// ─── P R I N T
+// ──────────────────────────────────────────────────────────
 // ─── Print colored image
 int image_print(const IMAGE img)
 {
@@ -46,95 +156,4 @@ int image_print(const IMAGE img)
         }
 
         return 1;
-}
-// ──────────────────────────────────────────────────────────
-// ─── R E A D
-// ──────────────────────────────────────────────────────────
-
-// ─── Read image in file and return IMAGE object
-IMAGE image_read(const char *fname)
-{
-        //      VERIFY ARGUMENTS
-        //      ────────────────
-        if (fname == NULL)
-                return (IMAGE){UNKNOWN_F, UNKNOWN_TY, 0, 0, NULL};
-
-        //      USE THE APROPRIATE READ FUNCTION
-        //      ────────────────────────────────
-        Family family = image_get_family(fname);
-
-        switch (family)
-        {
-        case NETPBM_F:
-                return NETPBM_read(fname);
-        default:
-                return (IMAGE){family, UNKNOWN_TY, 0, 0, NULL};
-        }
-}
-
-// ──────────────────────────────────────────────────────────
-// ─── W R I T E
-// ──────────────────────────────────────────────────────────
-
-// ─── Write src data to data
-int image_write(const IMAGE img, const char *dest_fname)
-{
-        //      VERIFY ARGUMENTS
-        //      ────────────────
-        if (dest_fname == NULL)
-                return 0;
-
-        //      USE THE APROPRIATE READ FUNCTION
-        //      ────────────────────────────────
-        switch (img.family)
-        {
-        case NETPBM_F:
-                switch (img.type)
-                {
-                case PGM_TY:
-                        return PGM_write(img, dest_fname);
-                // case PLAIN_PGM_TY:
-                //         return plain_PGM_write(img.data, dest_fname);
-                // case PPM_TY:
-                //         return PPM_write(img.data, dest_fname);
-                // case PLAIN_PPM_TY:
-                //         return plain_PPM_write(img.data, dest_fname);
-                default:
-                        return 0;
-                }
-        default:
-                return 0;
-        }
-}
-
-// ──────────────────────────────────────────────────────────
-// ─── C O N V E R T
-// ──────────────────────────────────────────────────────────
-IMAGE image_to_ascii(const IMAGE img)
-{
-        //      VERIFY ARGUMENTS
-        //      ────────────────
-        if (img.data == NULL || img.width < 0 || img.height < 0)
-        {
-                fprintf(stderr, "image_to_ascii: Invalid img provided\n");
-                exit(0);
-        }
-
-        //      USE THE APROPRIATE CONVERSION FUNCTION
-        //      ──────────────────────────────────────
-        switch (img.family)
-        {
-        case NETPBM_F:
-                switch (img.type)
-                {
-                case PGM_TY:
-                        return PGM_to_ascii(img);
-                default:
-                        fprintf(stderr, "image_to_ascii: Conversion function not developed yet\n");
-                        exit(0);
-                }
-        default:
-                fprintf(stderr, "image_to_ascii: Conversion function not developed yet\n");
-                exit(0);
-        }
 }

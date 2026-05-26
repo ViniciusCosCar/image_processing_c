@@ -43,7 +43,7 @@ IMAGE NETPBM_read(const char *fname)
         //      VERIFY ARGUMENTS
         //      ────────────────
         if (fname == NULL)
-                return (IMAGE){UNKNOWN_F, UNKNOWN_TY, 0, 0, NULL};
+                return (IMAGE)nullimg;
 
         //      OPEN THE FILE
         //      ─────────────
@@ -53,19 +53,17 @@ IMAGE NETPBM_read(const char *fname)
         if (fp == NULL)
         {
                 fprintf(stderr, "NETPBM_read: error opening file\n");
-                exit(0);
+                return nullimg;
         }
 
         //      GATHER INFORMATION REGARDING IMAGE AND TYPE
         //      ───────────────────────────────────────────
 
-        NETPBM_readprintComment(fp);
-
         // ─── Type
         if (fscanf(fp, "P%d\n", &typeno) != 1)
         {
                 fprintf(stderr, "NETPBM_read: error reading typeno\n");
-                exit(0);
+                return nullimg;
         }
 
         fprintf(stderr, "NETPBM_read: pgm type P%d\n", typeno);
@@ -75,7 +73,7 @@ IMAGE NETPBM_read(const char *fname)
         if (fscanf(fp, "%d %d\n", &width, &height) != 2)
         {
                 fprintf(stderr, "NETPBM_read: error reading width,height\n");
-                exit(0);
+                return nullimg;
         }
         fprintf(stderr, "NETPBM_read: w %d  h %d\n", width, height);
         NETPBM_readprintComment(fp);
@@ -84,7 +82,7 @@ IMAGE NETPBM_read(const char *fname)
         if (fscanf(fp, "%d", &maxvalue) != 1)
         {
                 fprintf(stderr, "readpgm: error reading maxvalue\n");
-                exit(0);
+                return nullimg;
         }
         fprintf(stderr, "maxvalue %d\n", maxvalue);
         NETPBM_readprintComment(fp);
@@ -99,16 +97,16 @@ IMAGE NETPBM_read(const char *fname)
         datasize = width * height;
 
         // ─── Allocate sufficient memory
-        data = (uint8_t *)calloc(datasize, sizeof(uint8_t));
+        data = malloc(datasize);
         if (data == NULL)
         {
                 fprintf(stderr, "NETPBM_read: calloc error\n");
-                exit(0);
+                return nullimg;
         }
         if (fread(data, sizeof(uint8_t), datasize, fp) != datasize)
         {
                 fprintf(stderr, "NETPBM_read: error reading image\n");
-                exit(0);
+                return nullimg;
         }
 
         //      RETURN AND FINISH SAFETLY
@@ -117,7 +115,7 @@ IMAGE NETPBM_read(const char *fname)
         fclose(fp);
 
         Type type = (typeno == 2) ? (PLAIN_PGM_TY) : (typeno == 5) ? (PGM_TY) : (UNKNOWN_TY);
-        return (IMAGE){NETPBM_F, type, width, height, maxvalue, data};
+        return (IMAGE){NETPBM_F, type, width, height, datasize, maxvalue, data};
 }
 
 #endif
