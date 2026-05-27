@@ -142,11 +142,11 @@ int image_print(const IMAGE img)
         case PGM_TY:
                 return PGM_print(img);
         // case PLAIN_PGM_TY:
-        //         return PLAIN_PGM_print_colored(img);
+        //         return PLAIN_PGM(img);
         // case PPM_TY:
-        //         return PPM_print_colored(img);
+        //         return PPM_print(img);
         // case PLAIN_PPM_TY:
-        //         return PLAIN_PPM_print_colored(img);
+        //         return PLAIN_PPM(img);
         case ASCII_TY:
                 return ASCII_print(img);
         default:
@@ -156,4 +156,72 @@ int image_print(const IMAGE img)
         }
 
         return 1;
+}
+// ──────────────────────────────────────────────────────────
+// ─── B I N A R I Z E
+// ──────────────────────────────────────────────────────────
+// ─── Binarize image
+IMAGE image_binarize(const IMAGE img)
+{
+        //      VERIFY ARGUMENTS
+        //      ────────────────
+        if (img.data == NULL || img.width < 0 || img.height < 0)
+        {
+                fprintf(stderr, "image_binarize: invalid img provided\n");
+                return nullimg;
+        }
+
+        //      USE THE APROPRIATE BINARIZE FUNCTION
+        //      ────────────────────────────────────
+        switch (img.family)
+        {
+        case NETPBM_F:
+                switch (img.type)
+                {
+                case PGM_TY:
+                        return PGM_binarize(img);
+                default:
+                        fprintf(stderr, "image_binarize: binarize function not developed yet\n");
+                        return nullimg;
+                }
+        // case ASCII_F:
+        //         return ASCII_binarize();
+        default:
+                fprintf(stderr, "image_binarize: binarize function not developed yet\n");
+                return nullimg;
+        }
+}
+// ──────────────────────────────────────────────────────────
+// ─── I N V E R T
+// ──────────────────────────────────────────────────────────
+// ─── Invert image
+IMAGE image_invert(const IMAGE img, const char *fname)
+{
+        //      VERIFY ARGUMENTS
+        //      ────────────────
+        if (img.data == NULL || img.width < 0 || img.height < 0)
+        {
+                fprintf(stderr, "image_invert: invalid img provided\n");
+                return nullimg;
+        }
+
+        //      USE THE APROPRIATE BINARIZE FUNCTION
+        //      ────────────────────────────────────
+        switch (img.family)
+        {
+        case NETPBM_F:
+                switch (img.type)
+                {
+                case PGM_TY:
+                        return PGM_invert(img, fname);
+                default:
+                        fprintf(stderr, "image_invert: invert function not developed yet\n");
+                        return nullimg;
+                }
+        // case ASCII_F:
+        //         return ASCII_invert(img, argv[2]);
+        default:
+                fprintf(stderr, "image_invert: invert function not developed yet\n");
+                return nullimg;
+        }
 }

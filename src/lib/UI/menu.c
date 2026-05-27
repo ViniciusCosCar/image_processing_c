@@ -85,27 +85,9 @@ void menu_transform(const IMAGE img, char **argv)
                         //      ───────
                         return;
 
-                case 1: //      RESIZE IMAGE
-                        //      ────────────
-                        if (argv[1] == NULL || argv[2] == NULL)
-                        {
-                                fprintf(stderr, "image_resize: missing file paths\n");
-                                break;
-                        }
-                        char program[] = "python3 resize.py ";
-
-                        char *s = (char *)calloc(strlen(program) + strlen(argv[1]) + strlen(argv[2]) + 3, sizeof(char));
-
-                        strcpy(s, program);
-                        strcat(s, argv[1]);
-                        strcat(s, " ");
-                        strcat(s, argv[2]);
-
-                        // Resize pgm
-                        system(s);
-
-                        free(s);
-                        break;
+                        // case 1: //      RESIZE IMAGE
+                        //         //      ────────────
+                        //         break;
 
                 case 2: //      INVERT IMAGE
                         //      ────────────
@@ -117,7 +99,7 @@ void menu_transform(const IMAGE img, char **argv)
                                 ;
 
                         // Invert and write new image
-                        PGM_write(PGM_invert(img, axis), argv[2]);
+                        image_write(image_invert(img, axis), argv[2]);
 
                         break;
 
@@ -125,13 +107,13 @@ void menu_transform(const IMAGE img, char **argv)
                         //      ────────────
                 ;
                         // Write bin file
-                        PGM_write(PGM_binarize(img), argv[2]);
+                        image_write(image_binarize(img), argv[2]);
 
                         break;
 
                 default: //     SORRY
                          //     ────
-                        fprintf(stderr, "Invalid option or not implemented function yet\n");
+                        fprintf(stderr, "menu: invalid option or not implemented function yet\n");
                 }
                 while (getchar() != '\n')
                         ;

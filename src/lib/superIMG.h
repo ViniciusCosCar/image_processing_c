@@ -88,7 +88,13 @@ IMAGE image_read(const char *fname);
 // ─── Write
 int image_write(const IMAGE, const char *fname);
 
-// ─── Print colored image with ansii escape sequences
+// ─── Binarize
+IMAGE image_binarize(const IMAGE img);
+
+// ─── Invert
+IMAGE image_invert(const IMAGE img, const char *fname);
+
+// ─── Print image
 int image_print(const IMAGE);
 
 // ──────────────────────────────────────────────────────────
