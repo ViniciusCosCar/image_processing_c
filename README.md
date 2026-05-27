@@ -12,16 +12,16 @@
 |Status	| Task|
 |-------|--------|
 |🟧| Allow user to color ascii representation providing a certain gradiant, begining rgb -> final rgb, using ANSI escape codes: https://en.wikipedia.org/wiki/ANSI_escape_code|
-|🟧| Create C image resize function |
+|🟧| Create image resize function |
 |🟧| Add image rotation by a specified angle|
  
 |           |write()|binarize()|invert()|     print()   |resize()|image_to_pgm()|image_to_plain_pgm()|image_to_ppm()|image_to_plain_ppm()|image_to_ascii()|
 |-----------|-------|----------|--------|---------------|--------|--------------|--------------------|--------------|--------------------|----------------|
-| PGM       |  🟩   |    🟩    |   🟩   |       🟩      |   🟩   |              |          🟧        |      🟧      |         🟧         |       🟩       |
-| Plain PGM |  🟧   |    🟧    |   🟧   |       🟧      |   🟩   |      🟧      |                    |      🟧      |         🟧         |       🟧       |
-| PPM       |  🟧   |    🟧    |   🟧   |       🟧      |   🟩   |      🟧      |          🟧        |              |         🟧         |       🟧       |
-| Plain PPM |  🟧   |    🟧    |   🟧   |       🟧      |   🟩   |      🟧      |          🟧        |      🟧      |                    |       🟧       |
-| ASCII     |  🟩   |    🟧    |   🟧   |       🟩      |   🟩   |      🟧      |          🟧        |      🟧      |         🟧         |                |
+| PGM       |  🟩   |    🟩    |   🟩   |       🟩      |   🟧   |              |          🟧        |      🟧      |         🟧         |       🟩       |
+| Plain PGM |  🟧   |    🟧    |   🟧   |       🟧      |   🟧   |      🟧      |                    |      🟧      |         🟧         |       🟧       |
+| PPM       |  🟧   |    🟧    |   🟧   |       🟧      |   🟧   |      🟧      |          🟧        |              |         🟧         |       🟧       |
+| Plain PPM |  🟧   |    🟧    |   🟧   |       🟧      |   🟧   |      🟧      |          🟧        |      🟧      |                    |       🟧       |
+| ASCII     |  🟩   |    🟧    |   🟧   |       🟩      |   🟧   |      🟧      |          🟧        |      🟧      |         🟧         |                |
 
 ## Description
 *   🟧    if the task is to be implemented
