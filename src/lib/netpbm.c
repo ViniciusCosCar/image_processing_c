@@ -65,8 +65,6 @@ IMAGE NETPBM_read(const char *fname)
                 fprintf(stderr, "NETPBM_read: error reading typeno\n");
                 return nullimg;
         }
-
-        fprintf(stderr, "NETPBM_read: pgm type P%d\n", typeno);
         NETPBM_readprintComment(fp);
 
         // ─── Width and Height
@@ -75,7 +73,6 @@ IMAGE NETPBM_read(const char *fname)
                 fprintf(stderr, "NETPBM_read: error reading width,height\n");
                 return nullimg;
         }
-        fprintf(stderr, "NETPBM_read: w %d  h %d\n", width, height);
         NETPBM_readprintComment(fp);
 
         // ─── Max value for data element
@@ -84,7 +81,6 @@ IMAGE NETPBM_read(const char *fname)
                 fprintf(stderr, "readpgm: error reading maxvalue\n");
                 return nullimg;
         }
-        fprintf(stderr, "maxvalue %d\n", maxvalue);
         NETPBM_readprintComment(fp);
 
         /* Read newline separately to avoid skipping bytes of

@@ -96,7 +96,10 @@ IMAGE PGM_binarize(const IMAGE img)
         //      VERIFY ARGUMENTS
         //      ────────────────
         if (img.data == NULL || img.datasize < 0)
+        {
+                fprintf(stderr, "PGM_binarize: invalid image\n");
                 return img;
+        }
 
         //      CALCULATE LIMIAR
         //      ────────────────
@@ -154,6 +157,24 @@ IMAGE PGM_invert(const IMAGE img, const char *axis)
 
         return inv_img;
 }
+// ──────────────────────────────────────────────────────────
+// ─── PGM resize
+// ──────────────────────────────────────────────────────────
+IMAGE PGM_resize(const IMAGE img)
+{
+        //      VERIFY ARGUMENTS
+        //      ────────────────
+        if (img.data == NULL || img.datasize < 0)
+        {
+                fprintf(stderr, "PGM_resize: invalid image\n");
+                return img;
+        }
+
+        // ─── Ask new resolution
+
+        return nullimg;
+}
+
 // ──────────────────────────────────────────────────────────
 // ─── CONVERT PGM TO ASCII TO IMAGE
 // ──────────────────────────────────────────────────────────

@@ -40,13 +40,27 @@ IMAGE ASCII_read(const char *fname)
         }
 
         // ─── Copy data to data buffer
+        //      Also set img.width and img.height, where
+        //      img.width is set to max width found in given image
         fseek(fp, 0, SEEK_SET);
-        if (fread(img.data, sizeof(char), img.datasize, fp) != img.datasize)
+
+        for (int i = 0, max = 0; i != img.datasize; i++)
         {
-                fprintf(stderr, "ASCII_read: it was not sucessfull in copying all data from provided file");
-                fclose(fp);
-                free(img.data);
-                return nullimg;
+                if (fread(img.data + i, sizeof(char), 1, fp) != 1)
+                {
+                        fprintf(stderr, "ASCII_read: it was not sucessfull in copying all data from provided file");
+                        fclose(fp);
+                        return img;
+                }
+                if (((char *)img.data)[i] == '\n')
+                {
+                        img.height++;
+                        if (max > img.width)
+                                img.width = max;
+                        max = 0;
+                }
+                else
+                        max++;
         }
 
         fclose(fp);

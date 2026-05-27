@@ -15,7 +15,6 @@ Operation menu()
         int opt;
         while (1)
         {
-                printf("\033[2;3J\033[H");
                 printf("%s ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁ %s\n", WHITE, RST);
                 printf("%s▕ Which operation would you like to perform? ▏%s\n", WHITE, RST);
                 printf("%s▕────────────────────────────────────────────▏%s\n", WHITE, RST);
@@ -45,7 +44,6 @@ Operation menu()
                 return opt;
         };
 }
-
 // ──────────────────────────────────────────────────────────
 // ─── M E N U   I M A G E   T R A N S F O R M A T I O N S
 // ──────────────────────────────────────────────────────────
@@ -89,9 +87,11 @@ void menu_transform(const IMAGE img, char **argv)
 
                 case 1: //      RESIZE IMAGE
                         //      ────────────
-
-                        printf("hello");
-
+                        if (argv[1] == NULL || argv[2] == NULL)
+                        {
+                                fprintf(stderr, "image_resize: missing file paths\n");
+                                break;
+                        }
                         char program[] = "python3 resize.py ";
 
                         char *s = (char *)calloc(strlen(program) + strlen(argv[1]) + strlen(argv[2]) + 3, sizeof(char));
@@ -111,10 +111,10 @@ void menu_transform(const IMAGE img, char **argv)
                         //      ────────────
                 ;
                         char axis[] = "yx";
-                        while (getchar() != '\n')
-                                ; // Clean buffer
                         printf("Axis: ");
                         scanf("%2[^\n]", axis);
+                        while (getchar() != '\n') // Clean buffer
+                                ;
 
                         // Invert and write new image
                         PGM_write(PGM_invert(img, axis), argv[2]);
@@ -137,7 +137,6 @@ void menu_transform(const IMAGE img, char **argv)
                         ;
         }
 }
-
 // ──────────────────────────────────────────────────────────
 // ─── M E N U   I M A G E   C O N V E R S I O N S
 // ──────────────────────────────────────────────────────────
@@ -190,7 +189,7 @@ void menu_convert(const IMAGE img, char **argv)
                         if (img.type == PGM_TY)
                                 continue;
 
-                        fprintf(stderr, "menu_view: not implemented function yet\n");
+                        fprintf(stderr, "menu_convert: not implemented function yet\n");
                         // image_to_pgm();
                         break;
 
@@ -199,7 +198,7 @@ void menu_convert(const IMAGE img, char **argv)
                         if (img.type == PLAIN_PGM_TY)
                                 continue;
 
-                        fprintf(stderr, "menu_view: not implemented function yet\n");
+                        fprintf(stderr, "menu_convert: not implemented function yet\n");
                         // image_to_plain_pgm();
                         break;
 
@@ -208,7 +207,7 @@ void menu_convert(const IMAGE img, char **argv)
                         if (img.type == PPM_TY)
                                 continue;
 
-                        fprintf(stderr, "menu_view: not implemented function yet\n");
+                        fprintf(stderr, "menu_convert: not implemented function yet\n");
                         // image_to_ppm();
                         break;
 
@@ -217,7 +216,7 @@ void menu_convert(const IMAGE img, char **argv)
                         if (img.type == PLAIN_PPM_TY)
                                 continue;
 
-                        fprintf(stderr, "menu_view: not implemented function yet\n");
+                        fprintf(stderr, "menu_convert: not implemented function yet\n");
                         // image_to_plain_ppm();
                         break;
 
@@ -232,7 +231,7 @@ void menu_convert(const IMAGE img, char **argv)
 
                 default: //     SORRY
                          //     ────
-                        fprintf(stderr, "Invalid option\n");
+                        fprintf(stderr, "menu_convet: invalid option\n");
                 }
                 while (getchar() != '\n')
                         ;

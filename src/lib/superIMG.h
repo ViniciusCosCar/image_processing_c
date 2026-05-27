@@ -11,17 +11,17 @@
 //
 enum Family
 {
-        ASCII_F = 1,
+        ASCII_F,
         NETPBM_F,
         PNG_F,
         JPEG_F,
-        UNKNOWN_F
+        UNKNOWN_F,
 
 } typedef Family;
 
 enum Type
 {
-        ASCII_TY = 1,
+        ASCII_TY,
 
         PGM_TY,
         PLAIN_PGM_TY,
@@ -33,9 +33,10 @@ enum Type
 
         JPEG_TY,
 
-        UNKNOWN_TY
+        UNKNOWN_TY,
 
 } typedef Type;
+
 //
 // ─────────────────────────────────────────────────── II ──────────
 //  :::::: S T R U C T : :  :   :    :     :        :          :
@@ -66,6 +67,7 @@ struct
         }
 
 static const IMAGE nullimg = {.family = UNKNOWN_F, .type = UNKNOWN_TY, .data = NULL};
+extern const char *types[];
 // #define nullimg                                                                                                        \
 //         {                                                                                                              \
 //                 .family = UNKNOWN_F, .type = UNKNOWN_TY, .data = NULL                                                  \
