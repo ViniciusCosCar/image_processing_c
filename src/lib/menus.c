@@ -1,48 +1,83 @@
-#include <stdio.h>
+#include "superIMG.h"
+
 #include <stdlib.h>
-#include <string.h>
+#include <termios.h>
+#include <unistd.h>
 
-#include "../superIMG.h"
-#include "UI.h"
+#define UP_BORDER "▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁\n"
+#define DOWN_BORDER "▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔\n"
 
+char *OPTS[] = {"░ exit                                  ░\n", "░ transform                             ░\n",
+                "░ convert                               ░\n", "░ view                                  ░\n"};
+const int N_OPTS = sizeof(OPTS) / sizeof(OPTS[0]);
+
+void clear()
+{
+        printf("\033[2;3J\033[H");
+}
+// ──────────────────────────────────────────────────────────
+// ─── O P E R A T I O N   S E L E C T I O N
+// ──────────────────────────────────────────────────────────
+void select_opt(char **opts, const int n_opts, const int selected)
+{
+        for (int i = 0; i < n_opts; i++)
+                if (i == selected)
+                        printf("\033[41m%s\033[m", opts[selected]);
+                else
+                        printf("%s", opts[i]);
+}
 // ──────────────────────────────────────────────────────────
 // ─── M E N U
 // ──────────────────────────────────────────────────────────
-Operation menu()
+Operation menu(IMAGE img)
 {
         system("");
 
-        int opt;
-        while (1)
+        char key;
+        unsigned int select = 0;
+        do
         {
-                printf("%s ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁ %s\n", WHITE, RST);
-                printf("%s▕ Which operation would you like to perform? ▏%s\n", WHITE, RST);
-                printf("%s▕────────────────────────────────────────────▏%s\n", WHITE, RST);
-                printf("%s▕ 0 -> %sexit%s                                  ▏%s\n", WHITE, RED_FG, WHITE, RST);
-                printf("%s▕ 1 -> %stransform%s                             ▏%s\n", WHITE, BLUE_FG, WHITE, RST);
-                printf("%s▕ 2 -> %sconvert%s                               ▏%s\n", WHITE, PURPLE_FG, WHITE, RST);
-                printf("%s▕ 3 -> %sview%s                                  ▏%s\n", WHITE, GREEN_FG, WHITE, RST);
-                printf("%s▕▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▏%s\n", WHITE, RST);
-                printf("%s                                              %s\n", WHITE, RST);
-                printf(": ");
+                clear();
 
-                scanf("%d", &opt);
-                while (getchar() != '\n') // Clean buffer
-                        ;
+                printf("Format: %s\n", types[img.type]);
+                printf("Res: %dx%d\n", img.width, img.height);
+                printf("Size: %sB\n", format_number(img.datasize));
 
-                if (opt == 0)
-                        exit(0);
-
-                if (opt != TRANSFORM && opt != CONVERT && opt != VIEW)
+                printf("%s", UP_BORDER);
+                switch (key)
                 {
-                        fprintf(stderr, "menu: invalid option\n");
-                        while (getchar() != '\n')
-                                ;
-                        continue;
+                case 'j':
+                        if (select == N_OPTS - 1)
+                                select = 0;
+                        else
+                                select++;
+
+                        break;
+                case 'k':
+                        if (select != 0)
+                                select--;
+                        else
+                                select = N_OPTS - 1;
+
+                        break;
                 }
 
-                return opt;
-        };
+                select_opt(OPTS, N_OPTS, select);
+                printf("%s", DOWN_BORDER);
+
+        } while ((key = raw_getch(STDIN_FILENO)) != '\n');
+
+        if (select == 0)
+                exit(0);
+
+        if (select != 1 && select != 2 && select != 3)
+        {
+                fprintf(stderr, "menu: invalid option\n");
+                while (getchar() != '\n')
+                        ;
+        }
+
+        return select;
 }
 // ──────────────────────────────────────────────────────────
 // ─── M E N U   I M A G E   T R A N S F O R M A T I O N S

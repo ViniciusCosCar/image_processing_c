@@ -2,7 +2,9 @@
 #define AUXS_C
 
 #include <stdint.h>
-#include <stdlib.h>
+#include <stdio.h>
+#include <termios.h>
+#include <unistd.h>
 
 // ──────────────────────────────────────────────────────────
 // ─── INVERT TWO uint8_t
@@ -44,21 +46,27 @@ int cp(const uint8_t *src, uint8_t *dest, const int buf_size)
 
         return 1;
 }
-
 // ──────────────────────────────────────────────────────────
-// ───
+// ─── CANONICAL CHARACTER INPUT
 // ──────────────────────────────────────────────────────────
-int forEach(uint8_t *buf, const int w, const int h, int (*func)(uint8_t *, int w, int h, int i))
+int raw_getch(int fd)
 {
-        if (buf == NULL || w < 0 || h < 0)
-                return 0;
+        struct termios oldt, newt;
+        tcgetattr(fd, &oldt); // Save existing attributes from existing interface
+        newt = oldt;
 
-        int res = 0;
-        int datawidth = w * h;
-        for (int i = 0; i < datawidth; i++)
-                res += func(buf, w, h, i);
+        newt.c_lflag &= ~(ICANON | ECHO); // Turn off echo and canonical input
 
-        return res;
+        tcsetattr(fd, TCSANOW, &newt);       // Apply changes immediatly
+        dprintf(STDOUT_FILENO, "\033[?25l"); // Hide cursor
+
+        char c;
+        read(fd, &c, 1);
+
+        tcsetattr(fd, TCSANOW, &oldt);       // Restore last attributes
+        dprintf(STDOUT_FILENO, "\033[?25h"); // Show cursor
+
+        return c;
 }
 
 #endif
