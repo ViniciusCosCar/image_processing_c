@@ -172,7 +172,7 @@ IMAGE PGM_resize(const IMAGE img)
 
         // ─── Ask new resolution
 
-        return nullimg;
+        return NULLIMG;
 }
 
 // ──────────────────────────────────────────────────────────

@@ -4,37 +4,80 @@
 #include <termios.h>
 #include <unistd.h>
 
-#define UP_BORDER "▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁\n"
-#define DOWN_BORDER "▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔\n"
+char *format_number(int);
+void clear();
 
-char *OPTS[] = {"░ exit                                  ░\n", "░ transform                             ░\n",
-                "░ convert                               ░\n", "░ view                                  ░\n"};
-const int N_OPTS = sizeof(OPTS) / sizeof(OPTS[0]);
+const char *WHITE = "\033[m\033[30;47m";
+const char *RED_FG = "\033[31m";
+const char *GREEN_FG = "\033[32m";
+const char *BLUE_FG = "\033[34m";
+const char *PURPLE_FG = "\033[35m";
 
-void clear()
-{
-        printf("\033[2;3J\033[H");
-}
+const char *RST = "\033[m";
+
 // ──────────────────────────────────────────────────────────
 // ─── O P E R A T I O N   S E L E C T I O N
 // ──────────────────────────────────────────────────────────
 void select_opt(char **opts, const int n_opts, const int selected)
 {
+        //      VERIFY ARGUMENTS
+        //      ────────────────
+        //      ...(TODO)...
+
         for (int i = 0; i < n_opts; i++)
-                if (i == selected)
-                        printf("\033[41m%s\033[m", opts[selected]);
+                if (i == selected - 1)
+                        printf("\033[7m%s\033[m", opts[i]);
                 else
                         printf("%s", opts[i]);
+}
+void menu_mov(const char key, unsigned int *selectptr, char **opts, const int n_opts)
+{
+        //      VERIFY ARGUMENTS
+        //      ────────────────
+        //      ...(TODO)...
+
+        int int_key;
+        if (key == 'j' || key == 'B')
+        {
+                if (*selectptr == n_opts)
+                        *selectptr = 1;
+                else
+                        (*selectptr)++;
+        }
+
+        else if (key == 'k' || key == 'A')
+        {
+                if (*selectptr != 1)
+                        (*selectptr)--;
+                else
+                        (*selectptr) = n_opts;
+        }
+
+        else if (int_key = key - '0', int_key >= 1 && int_key <= n_opts)
+                *selectptr = int_key;
+
+        select_opt(opts, n_opts, *selectptr);
 }
 // ──────────────────────────────────────────────────────────
 // ─── M E N U
 // ──────────────────────────────────────────────────────────
 Operation menu(IMAGE img)
 {
+        //      VERIFY ARGUMENTS
+        //      ────────────────
+        //      ...(TODO)...
+
+        const char *opts_H = "▁▁▁Choose a function to perform▁▁▁▁▁▁▁▁▁▁\n";
+        const char *opts_B = "▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔\n";
+
+        char *opts[] = {"░ 1   exit                              ░\n", "░ 2   transform                         ░\n",
+                        "░ 3   convert                           ░\n", "░ 4   view                              ░\n"};
+        const int n_opts = sizeof(opts) / sizeof(*opts);
+
         system("");
 
         char key;
-        unsigned int select = 0;
+        unsigned int select = 1;
         do
         {
                 clear();
@@ -43,39 +86,13 @@ Operation menu(IMAGE img)
                 printf("Res: %dx%d\n", img.width, img.height);
                 printf("Size: %sB\n", format_number(img.datasize));
 
-                printf("%s", UP_BORDER);
-                switch (key)
-                {
-                case 'j':
-                        if (select == N_OPTS - 1)
-                                select = 0;
-                        else
-                                select++;
+                printf("\n%s", opts_H);
 
-                        break;
-                case 'k':
-                        if (select != 0)
-                                select--;
-                        else
-                                select = N_OPTS - 1;
+                menu_mov(key, &select, opts, n_opts);
 
-                        break;
-                }
-
-                select_opt(OPTS, N_OPTS, select);
-                printf("%s", DOWN_BORDER);
+                printf("%s", opts_B);
 
         } while ((key = raw_getch(STDIN_FILENO)) != '\n');
-
-        if (select == 0)
-                exit(0);
-
-        if (select != 1 && select != 2 && select != 3)
-        {
-                fprintf(stderr, "menu: invalid option\n");
-                while (getchar() != '\n')
-                        ;
-        }
 
         return select;
 }
@@ -84,47 +101,47 @@ Operation menu(IMAGE img)
 // ──────────────────────────────────────────────────────────
 void menu_transform(const IMAGE img, char **argv)
 {
+        //      VERIFY ARGUMENTS
+        //      ────────────────
+        //      ...(TODO)...
+
+        const char *opts_H = "▁▁▁Which transformation to apply▁▁▁▁▁▁▁▁▁\n";
+        const char *opts_B = "▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔\n";
+        char *opts[] = {"░ 1   back                              ░\n", "░ 2   resize                            ░\n",
+                        "░ 3   invert                            ░\n", "░ 4   binarize                          ░\n"};
+        const int n_opts = sizeof(opts) / sizeof(*opts);
+
         system("");
 
+        char key;
+        unsigned int select = 1;
         while (1)
         {
-                printf("\033[2;3J\033[H");
-                printf("%s ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁ %s\n", WHITE, RST);
-                printf("%s▕ Which file transformation would you like to perform? ▏%s\n", WHITE, RST);
-                printf("%s▕──────────────────────────────────────────────────────▏%s\n", WHITE, RST);
-                printf("%s▕ 0 -> %sback%s                                            ▏%s\n", WHITE, RED_FG, WHITE, RST);
-
-                printf("%s▕ 1 -> %sresize%s                                          ▏%s\n", WHITE, BLUE_FG, WHITE,
-                       RST);
-
-                printf("%s▕ 2 -> %sinvert%s                                          ▏%s\n", WHITE, BLUE_FG, WHITE,
-                       RST);
-
-                printf("%s▕ 3 -> %sbinarize%s                                        ▏%s\n", WHITE, BLUE_FG, WHITE,
-                       RST);
-
-                printf("%s▕▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▏%s\n", WHITE, RST);
-                printf("%s                                                        %s\n", WHITE, RST);
-                printf(": ");
-
-                int opt;
-                scanf("%d", &opt);
-                while (getchar() != '\n') // Clean buffer
-                        ;
-
-                //      ASK USER TO CHOOSE AN OPERATION AND PERFORM IT
-                //      ──────────────────────────────────────────────
-                switch (opt)
+                //      LET USER TO CHOOSE AN OPERATION
+                //      ────────────────────────────────
+                do
                 {
-                case 0: //      GO BACK
+                        clear();
+
+                        printf("%s", opts_H);
+                        menu_mov(key, &select, opts, n_opts);
+                        printf("%s", opts_B);
+
+                } while ((key = raw_getch(STDIN_FILENO)) != '\n');
+
+                //      PERFORM CHOOSEN OPERATION
+                //      ────────────────────────────────
+                switch (select)
+                {
+                case 1: //      GO BACK
                         //      ───────
                         return;
 
-                        // case 1: //      RESIZE IMAGE
+                        // case 2: //      RESIZE IMAGE
                         //         //      ────────────
                         //         break;
 
-                case 2: //      INVERT IMAGE
+                case 3: //      INVERT IMAGE
                         //      ────────────
                 ;
                         char axis[] = "yx";
@@ -138,7 +155,7 @@ void menu_transform(const IMAGE img, char **argv)
 
                         break;
 
-                case 3: //      BINARIZE PGM
+                case 4: //      BINARIZE PGM
                         //      ────────────
                 ;
                         // Write bin file
@@ -159,49 +176,44 @@ void menu_transform(const IMAGE img, char **argv)
 // ──────────────────────────────────────────────────────────
 void menu_convert(const IMAGE img, char **argv)
 {
+        //      VERIFY ARGUMENTS
+        //      ────────────────
+        //      ...(TODO)...
+
+        const char *opts_H = "▁▁▁Convert to▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁\n";
+        const char *opts_B = "▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔\n";
+        char *opts[] = {"░ 1   back                              ░\n", "░ 2   PGM                               ░\n",
+                        "░ 3   Plain PGM                         ░\n", "░ 4   PPM                               ░\n",
+                        "░ 5   Plain PPM                         ░\n", "░ 6   ASCII                             ░\n"};
+        const int n_opts = sizeof(opts) / sizeof(*opts);
+
         system("");
 
+        char key;
+        unsigned int select = 1;
         while (1)
         {
-                printf("\033[2;3J\033[H");
-                printf("%s ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁ %s\n", WHITE, RST);
-                printf("%s▕ Would you like to convert to which image format? ▏%s\n", WHITE, RST);
-                printf("%s▕──────────────────────────────────────────────────▏%s\n", WHITE, RST);
-                printf("%s▕ 0 -> %sback%s                                        ▏%s\n", WHITE, RED_FG, WHITE, RST);
+                //      LET USER TO CHOOSE AN OPERATION
+                //      ────────────────────────────────
+                do
+                {
+                        clear();
 
-                printf("%s▕ 1 -> %sPGM%s                                         ▏%s\n", WHITE,
-                       (img.type == PGM_TY) ? (CROSSED) : (PURPLE_FG), WHITE, RST);
+                        printf("%s", opts_H);
+                        menu_mov(key, &select, opts, n_opts);
+                        printf("%s", opts_B);
 
-                printf("%s▕ 2 -> %sPlain PGM%s                                   ▏%s\n", WHITE,
-                       (img.type == PLAIN_PGM_TY) ? (CROSSED) : (PURPLE_FG), WHITE, RST);
-
-                printf("%s▕ 3 -> %sPPM%s                                         ▏%s\n", WHITE,
-                       (img.type == PPM_TY) ? (CROSSED) : (PURPLE_FG), WHITE, RST);
-
-                printf("%s▕ 4 -> %sPlain PPM%s                                   ▏%s\n", WHITE,
-                       (img.type == PLAIN_PPM_TY) ? (CROSSED) : (PURPLE_FG), WHITE, RST);
-
-                printf("%s▕ 5 -> %sASCII%s                                       ▏%s\n", WHITE,
-                       (img.type == ASCII_TY) ? (CROSSED) : (PURPLE_FG), WHITE, RST);
-
-                printf("%s▕▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▏%s\n", WHITE, RST);
-                printf("%s                                                    %s\n", WHITE, RST);
-                printf(": ");
-
-                int opt;
-                scanf("%d", &opt);
-                while (getchar() != '\n') // Clean buffer
-                        ;
+                } while ((key = raw_getch(STDIN_FILENO)) != '\n');
 
                 //      PERFORM CONVERSION
                 //      ──────────────────
-                switch (opt)
+                switch (select)
                 {
-                case 0: //      GO BACK
+                case 1: //      GO BACK
                         //      ───────
                         return;
 
-                case 1: //      PGM
+                case 2: //      PGM
                         //      ───
                         if (img.type == PGM_TY)
                                 continue;
@@ -210,7 +222,7 @@ void menu_convert(const IMAGE img, char **argv)
                         // image_to_pgm();
                         break;
 
-                case 2: //      PLAIN PGM
+                case 3: //      PLAIN PGM
                         //      ─────────
                         if (img.type == PLAIN_PGM_TY)
                                 continue;
@@ -219,7 +231,7 @@ void menu_convert(const IMAGE img, char **argv)
                         // image_to_plain_pgm();
                         break;
 
-                case 3: //      PPM
+                case 4: //      PPM
                         //      ───
                         if (img.type == PPM_TY)
                                 continue;
@@ -228,7 +240,7 @@ void menu_convert(const IMAGE img, char **argv)
                         // image_to_ppm();
                         break;
 
-                case 4: //      PLAIN_PPM
+                case 5: //      PLAIN_PPM
                         //      ─────────
                         if (img.type == PLAIN_PPM_TY)
                                 continue;
@@ -237,7 +249,7 @@ void menu_convert(const IMAGE img, char **argv)
                         // image_to_plain_ppm();
                         break;
 
-                case 5: //      ASCII
+                case 6: //      ASCII
                         //      ─────
                         if (img.type == ASCII_TY)
                                 continue;
@@ -253,4 +265,26 @@ void menu_convert(const IMAGE img, char **argv)
                 while (getchar() != '\n')
                         ;
         }
+}
+
+// ──────────────────────────────────────────────────────────
+// ─── FORMAT BIG NUMBERS WITH UNITS
+// ──────────────────────────────────────────────────────────
+char *format_number(int n)
+{
+        static char res[8 * sizeof(float) + 3 * sizeof(char)]; // Unit + ' ' + '\0'
+
+        if (n > 1000000)
+                sprintf(res, "%d %c", n / 1000000, 'M');
+        else if (n > 1000)
+                sprintf(res, "%d %c", n / 1000, 'K');
+        else
+                sprintf(res, "%d  ", n);
+
+        return res;
+}
+
+void clear()
+{
+        printf("\033[2;3J\033[H");
 }

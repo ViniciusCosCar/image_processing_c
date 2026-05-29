@@ -15,6 +15,9 @@ int main(int argc, char **argv)
         {
                 switch (menu(img))
                 {
+                case 1:
+                        exit(0);
+
                 case TRANSFORM:
                         menu_transform(img, argv);
                         break;

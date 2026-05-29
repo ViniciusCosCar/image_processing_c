@@ -14,7 +14,7 @@ IMAGE ASCII_read(const char *fname)
         if (fp == NULL)
         {
                 fprintf(stderr, "ASCII_read: it was not possible to read ascii file\n");
-                return nullimg;
+                return NULLIMG;
         }
         //      READ FILE
         //      ─────────
@@ -28,7 +28,7 @@ IMAGE ASCII_read(const char *fname)
         {
                 fprintf(stderr, "ASCII_read: it was not possible to read ascii file");
                 fclose(fp);
-                return nullimg;
+                return NULLIMG;
         }
 
         img.data = malloc(img.datasize); // Allocate sufficient memory
@@ -36,7 +36,7 @@ IMAGE ASCII_read(const char *fname)
         {
                 fprintf(stderr, "ASCII_read: it was not possible to allocate space for ascii file");
                 fclose(fp);
-                return nullimg;
+                return NULLIMG;
         }
 
         // ─── Copy data to data buffer

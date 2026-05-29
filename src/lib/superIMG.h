@@ -34,7 +34,8 @@ enum Type
 
 enum Operation
 {
-        TRANSFORM = 1,
+        EXIT = 1,
+        TRANSFORM,
         CONVERT,
         VIEW
 
@@ -63,7 +64,7 @@ struct IMAGE
                 .family = NETPBM, .type = PGM_TY, .data = (uint8_t *)NULL                                              \
         }
 
-static const IMAGE nullimg = {.family = UNKNOWN_F, .type = UNKNOWN_TY, .data = NULL};
+static const IMAGE NULLIMG = {.family = UNKNOWN_F, .type = UNKNOWN_TY, .data = NULL};
 static const char *types[] = {"ASCII", "PGM", "Plain PGM", "PPM", "Plain PPM", "PNG", "JPEG_TY", "UNKNOWN"};
 
 //
@@ -75,6 +76,7 @@ static const char *types[] = {"ASCII", "PGM", "Plain PGM", "PPM", "Plain PPM", "
 // ──────────────────────────────────────────────────────────
 // ─── F - I N P U T
 // ──────────────────────────────────────────────────────────
+
 // ─── Returns Family of provided file;
 // return UNKNOWN_F if unable to detect
 Family image_detect_family(const char *);
@@ -105,7 +107,7 @@ IMAGE ASCII_read(const char *);
 
 //      IMAGE
 //      ─────
-// ───
+
 // Writes provided IMAGE to file; returns 1 if operation suceded and 0 otherwise
 int image_write(const IMAGE, const char *fname);
 
@@ -125,7 +127,7 @@ int plain_PPM_write(const uint8_t *, const char *);
 
 //      ASCII
 //      ─────
-// ───
+
 int ASCII_write(const IMAGE, const char *);
 
 //
@@ -136,7 +138,7 @@ int ASCII_write(const IMAGE, const char *);
 
 //      IMAGE
 //      ─────
-// ───
+
 // Binarize IMAGE; returns binarized image in case of success, NULLIMG otherwise
 IMAGE image_binarize(const IMAGE img);
 // Invert; returns inverted image in case of success, NULLIMG otherwise
@@ -170,12 +172,14 @@ int ASCII_print(const IMAGE);
 
 //      IMAGE
 //      ─────
-// ───
+
 IMAGE image_to_ascii(const IMAGE);
 
 //      NETPBM
 //      ──────
+
 // ─── PGM
+
 IMAGE PGM_to_ascii(const IMAGE);
 
 //
@@ -183,41 +187,17 @@ IMAGE PGM_to_ascii(const IMAGE);
 //  :::::: A U X I L I A R S   F U N C T I O N S : :  :   :    :     :        :          :
 // ────────────────────────────────────────────────────────────────────────────────────────
 //
+
 int swap(uint8_t *c1, uint8_t *c2);
 int invert_array(uint8_t *array, int bufsize);
 int cp(const uint8_t *src, uint8_t *dest, const int buf_size);
 int raw_getch(int fd);
+
 //
 // ───────────────────────────────────────────────────────────────────────────── VI ──────────
-//  :::::: U I / M E N U   F U N C T I O N S : :  :   :    :     :        :          :
+//  :::::: U I / M E N U : :  :   :    :     :        :          :
 // ────────────────────────────────────────────────────────────────────────────────────────
 //
-// ──────────────────────────────────────────────────────────
-// ─── C O L O R S
-// ──────────────────────────────────────────────────────────
-static const char *WHITE = "\033[m\033[30;47m";
-static const char *RED_FG = "\033[31m";
-static const char *GREEN_FG = "\033[32m";
-static const char *BLUE_FG = "\033[34m";
-static const char *PURPLE_FG = "\033[35m";
-
-static const char *RST = "\033[m";
-
-static inline char *format_number(int n)
-{
-        static char res[8 * sizeof(int) + 3 * sizeof(char)]; // Unit + ' ' + '\0'
-
-        if (n > 1000000)
-                sprintf(res, "%d %c", n / 1000000, 'm');
-        else if (n > 1000)
-                sprintf(res, "%d %c", n / 1000, 'k');
-        else
-                sprintf(res, "%d  ", n);
-
-        return res;
-}
-
-void clear();
 
 Operation menu(IMAGE);
 void menu_transform(const IMAGE img, char **argv);

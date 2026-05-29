@@ -41,7 +41,7 @@ IMAGE image_read(const char *fname)
         //      VERIFY ARGUMENTS
         //      ────────────────
         if (fname == NULL)
-                return nullimg;
+                return NULLIMG;
 
         //      USE THE APROPRIATE READ FUNCTION
         //      ────────────────────────────────
@@ -54,7 +54,7 @@ IMAGE image_read(const char *fname)
         case ASCII_F:
                 return ASCII_read(fname);
         default:
-                return nullimg;
+                return NULLIMG;
         }
 }
 // ──────────────────────────────────────────────────────────
@@ -100,7 +100,7 @@ IMAGE image_to_ascii(const IMAGE img)
         if (img.data == NULL || img.width < 0 || img.height < 0)
         {
                 fprintf(stderr, "image_to_ascii: invalid img provided\n");
-                return nullimg;
+                return NULLIMG;
         }
 
         //      USE THE APROPRIATE CONVERSION FUNCTION
@@ -114,11 +114,11 @@ IMAGE image_to_ascii(const IMAGE img)
                         return PGM_to_ascii(img);
                 default:
                         fprintf(stderr, "image_to_ascii: conversion function not developed yet\n");
-                        return nullimg;
+                        return NULLIMG;
                 }
         default:
                 fprintf(stderr, "image_to_ascii: conversion function not developed yet\n");
-                return nullimg;
+                return NULLIMG;
         }
 }
 // ──────────────────────────────────────────────────────────
@@ -168,7 +168,7 @@ IMAGE image_binarize(const IMAGE img)
         if (img.data == NULL || img.width < 0 || img.height < 0)
         {
                 fprintf(stderr, "image_binarize: invalid img provided\n");
-                return nullimg;
+                return NULLIMG;
         }
 
         //      USE THE APROPRIATE BINARIZE FUNCTION
@@ -182,13 +182,13 @@ IMAGE image_binarize(const IMAGE img)
                         return PGM_binarize(img);
                 default:
                         fprintf(stderr, "image_binarize: binarize function not developed yet\n");
-                        return nullimg;
+                        return NULLIMG;
                 }
         // case ASCII_F:
         //         return ASCII_binarize();
         default:
                 fprintf(stderr, "image_binarize: binarize function not developed yet\n");
-                return nullimg;
+                return NULLIMG;
         }
 }
 // ──────────────────────────────────────────────────────────
@@ -202,7 +202,7 @@ IMAGE image_invert(const IMAGE img, const char *fname)
         if (img.data == NULL || img.width < 0 || img.height < 0)
         {
                 fprintf(stderr, "image_invert: invalid img provided\n");
-                return nullimg;
+                return NULLIMG;
         }
 
         //      USE THE APROPRIATE BINARIZE FUNCTION
@@ -216,12 +216,12 @@ IMAGE image_invert(const IMAGE img, const char *fname)
                         return PGM_invert(img, fname);
                 default:
                         fprintf(stderr, "image_invert: invert function not developed yet\n");
-                        return nullimg;
+                        return NULLIMG;
                 }
         // case ASCII_F:
         //         return ASCII_invert(img, argv[2]);
         default:
                 fprintf(stderr, "image_invert: invert function not developed yet\n");
-                return nullimg;
+                return NULLIMG;
         }
 }
