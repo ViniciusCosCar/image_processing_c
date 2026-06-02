@@ -1,5 +1,8 @@
+#include <dirent.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
+#include <time.h>
 
 #include "lib/superIMG.h"
 
@@ -59,11 +62,38 @@ int main(int argc, char **argv)
                         switch (s1.st_mode & S_IFMT)
                         {
                         case S_IFDIR: // If it is a dir
+                        {
 
-                                fprintf(stderr, "main: video visualization is still not ready...\n");
-                                while (getchar() != '\n')
-                                        ;
+                                DIR *dir;
+                                struct dirent *env;
+
+                                // Open directory
+                                if ((dir = opendir(argv[1])) != NULL)
+                                {
+                                        while ((env = readdir(dir)) != NULL)
+                                        {
+                                                char *fpath =
+                                                malloc(strlen(argv[1]) + 1 + strlen(env->d_name) + 1); // '/','\0'
+
+                                                strcpy(fpath, argv[1]);     // directory
+                                                strcat(fpath, "/");         // directory/
+                                                strcat(fpath, env->d_name); // directory/file
+
+                                                printf("\033[2;3J\033[H");
+                                                image_print(image_read(fpath));
+
+                                                clock_t start = clock();
+                                                while ((float)(clock() - start) / CLOCKS_PER_SEC <= 0.25)
+                                                        ;
+                                        }
+                                }
+                                // In case of an error
+                                else
+                                { // TODO
+                                }
+
                                 break;
+                        }
 
                         case S_IFREG: // If it is a file
 
