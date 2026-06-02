@@ -1,10 +1,17 @@
 #include <dirent.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <time.h>
 
 #include "lib/superIMG.h"
+int comp(const void *a, const void *b)
+{
+
+        // Using strcmp() for comparing two strings
+        return strcmp(*(const char **)a, *(const char **)b);
+}
 
 int main(int argc, char **argv)
 {
@@ -35,8 +42,6 @@ int main(int argc, char **argv)
                         ;
         }
 
-        //      READ PGM FILE TO ARRAY
-        //      ──────────────────────
         const IMAGE img = image_read(argv[1]);
 
         //      SELECT OPERATIONS TO PERFORM
@@ -57,35 +62,62 @@ int main(int argc, char **argv)
                         break;
 
                 case VIEW:;
-
-                        // Distinguish a file from a directory
+                        // ─── Distinguish a file from a directory
                         switch (s1.st_mode & S_IFMT)
                         {
-                        case S_IFDIR: // If it is a dir
-                        {
+                        case S_IFDIR: { // ─── TODO: transform it in a function
 
                                 DIR *dir;
-                                struct dirent *env;
+                                struct dirent *item;
+                                char **fpaths = NULL;
+                                size_t n_paths = 0;
 
-                                // Open directory
+                                // ─── Open directory
                                 if ((dir = opendir(argv[1])) != NULL)
                                 {
-                                        while ((env = readdir(dir)) != NULL)
+                                        // ─── Create list of file names
+                                        while ((item = readdir(dir)) != NULL)
                                         {
-                                                char *fpath =
-                                                malloc(strlen(argv[1]) + 1 + strlen(env->d_name) + 1); // '/','\0'
+                                                if (strcmp(item->d_name, ".") == 0 || strcmp(item->d_name, "..") == 0)
+                                                        continue;
 
-                                                strcpy(fpath, argv[1]);     // directory
-                                                strcat(fpath, "/");         // directory/
-                                                strcat(fpath, env->d_name); // directory/file
+                                                if (fpaths != NULL)
+                                                        fpaths =
+                                                        (char **)realloc(fpaths, sizeof(char *) * (n_paths + 1));
+                                                else
+                                                        fpaths = (char **)malloc(sizeof(char *));
 
+                                                //                            '/'                      '\0'
+                                                size_t len = strlen(argv[1]) + 1 + strlen(item->d_name) + 1;
+                                                fpaths[n_paths] = malloc(len);
+                                                snprintf(fpaths[n_paths], len, "%s/%s", argv[1], item->d_name);
+                                                n_paths++;
+                                        }
+
+                                        // ─── Order list of file names
+                                        qsort(fpaths, n_paths, sizeof(fpaths[0]), comp);
+
+                                        for (int i = 0; i < n_paths; i++)
+                                        {
+                                                // printf("%s\n", fpaths[i]);
+                                                const IMAGE n_img = image_read(fpaths[i]);
+
+                                                // ─── Print image
                                                 printf("\033[2;3J\033[H");
-                                                image_print(image_read(fpath));
+                                                image_print(n_img);
 
+                                                // ─── fps
                                                 clock_t start = clock();
                                                 while ((float)(clock() - start) / CLOCKS_PER_SEC <= 0.25)
                                                         ;
+
+                                                free(fpaths[i]);
                                         }
+                                        while (getchar() != '\n')
+                                                ;
+
+                                        free(fpaths);
+                                        closedir(dir);
                                 }
                                 // In case of an error
                                 else

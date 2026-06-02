@@ -70,25 +70,6 @@ int PGM_print(IMAGE img)
         return 1;
 }
 // ──────────────────────────────────────────────────────────
-// ─── PRODUCE ASCII VERSION OF IMAGE PROVIDED
-// ──────────────────────────────────────────────────────────
-// int PGM2ascii(uint8_t *pgm_data, int imgsize, char *ascii_data)
-// {
-//         if (imgsize < 0 || ascii_data == NULL)
-//                 return 0;
-//
-//         // https://paulbourke.net/dataformats/asciiart/
-//         // char illumination[] =
-//         // "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/()1{}[]?-_+~<>i!lI;:,`'. ";
-//         char illumination[] = "@%#*+=-:. "; // Currently  uses 10 levels of grey
-//         int scale_div = sizeof(illumination) / sizeof(char);
-//
-//         for (int i = 0; i < imgsize; i++)
-//                 ascii_data[i] = illumination[(int)(pgm_data[i] * (scale_div - 1)) / 255];
-//
-//         return 1;
-// }
-// ──────────────────────────────────────────────────────────
 // ─── PRODUCE BINARIZED VERSION OF PGM PROVIDED
 // ──────────────────────────────────────────────────────────
 IMAGE PGM_binarize(const IMAGE img)
