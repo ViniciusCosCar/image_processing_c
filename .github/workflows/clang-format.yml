@@ -1,0 +1,41 @@
+name: Format C Code with clang-format
+
+on:
+  pull_request:
+    paths:
+      - '**.c'
+      - '**.h'
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Install clang-format
+        run: sudo apt-get install -y clang-format
+
+      - name: Run clang-format
+        run: |
+          git diff --name-only --diff-filter=d origin/main... | grep -E '\.(c|h)$' | xargs -r clang-format -i
+
+      - name: Check if formatting changes were made
+        id: verify-changed-files
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit formatting changes
+        if: steps.verify-changed-files.outputs.changed == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git commit -m "style: apply clang-format"
+          git push
