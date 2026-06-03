@@ -144,25 +144,25 @@ IMAGE image_binarize(const IMAGE img);
 // Invert; returns inverted image in case of success, NULLIMG otherwise
 IMAGE image_invert(const IMAGE img, const char *fname);
 // Print image; returns 1 in case of success, 0 otherwise
-int image_print(const IMAGE);
+int image_fprint(const IMAGE);
 
 //      NETPBM
 //      ──────
 // ─── PGM
 IMAGE PGM_binarize(const IMAGE);
 IMAGE PGM_invert(const IMAGE, const char *axis);
-int PGM_print(const IMAGE);
+int PGM_fprint(const IMAGE);
 // ─── plain PGM
-int PLAIN_PGM_print(const IMAGE);
+int PLAIN_PGM_fprint(const IMAGE);
 // ─── PPM
-int PPM_print(const IMAGE);
+int PPM_fprint(const IMAGE);
 // ─── plain PGM
-int plain_PPM_print(const IMAGE);
+int plain_PPM_fprint(const IMAGE);
 
 //      ASCII
 //      ─────
 // ───
-int ASCII_print(const IMAGE);
+int ASCII_fprint(const IMAGE);
 
 //
 // ───────────────────────────────────────────────────────────────────────────── III ───────────

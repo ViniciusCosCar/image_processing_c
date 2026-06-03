@@ -8,7 +8,6 @@
 #include "lib/superIMG.h"
 int comp(const void *a, const void *b)
 {
-
         // Using strcmp() for comparing two strings
         return strcmp(*(const char **)a, *(const char **)b);
 }
@@ -104,12 +103,12 @@ int main(int argc, char **argv)
 
                                                 // ─── Print image
                                                 printf("\033[2;3J\033[H");
-                                                image_print(n_img);
+                                                image_fprint(n_img);
 
                                                 // ─── fps
-                                                clock_t start = clock();
-                                                while ((float)(clock() - start) / CLOCKS_PER_SEC <= 0.25)
-                                                        ;
+                                                // clock_t start = clock();
+                                                // while ((float)(clock() - start) / CLOCKS_PER_SEC <= 0.25)
+                                                //         ;
 
                                                 free(fpaths[i]);
                                         }
@@ -129,7 +128,7 @@ int main(int argc, char **argv)
 
                         case S_IFREG: // If it is a file
 
-                                image_print(img);
+                                image_fprint(img);
                                 while (getchar() != '\n')
                                         ;
                                 break;

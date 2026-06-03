@@ -46,7 +46,7 @@ int PGM_write(IMAGE img, const char *fname)
 // ──────────────────────────────────────────────────────────
 // ─── PRINT COLORED PGM IMAGE WITH ANSII ESCAPE SEQUENCES
 // ──────────────────────────────────────────────────────────
-int PGM_print(IMAGE img)
+int PGM_fprint(IMAGE img)
 {
         //      VERIFY ARGUMENTS
         //      ────────────────
@@ -155,7 +155,6 @@ IMAGE PGM_resize(const IMAGE img)
 
         return NULLIMG;
 }
-
 // ──────────────────────────────────────────────────────────
 // ─── CONVERT PGM TO ASCII TO IMAGE
 // ──────────────────────────────────────────────────────────

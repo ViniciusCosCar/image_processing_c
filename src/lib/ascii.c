@@ -107,7 +107,7 @@ int ASCII_write(const IMAGE img, const char *fname)
 // ──────────────────────────────────────────────────────────
 // ─── PRINT
 // ──────────────────────────────────────────────────────────
-int ASCII_print(const IMAGE img)
+int ASCII_fprint(const IMAGE img)
 {
         //      VERIFY INPUT
         //      ────────────

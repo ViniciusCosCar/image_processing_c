@@ -125,7 +125,7 @@ IMAGE image_to_ascii(const IMAGE img)
 // ─── P R I N T
 // ──────────────────────────────────────────────────────────
 // ─── Print colored image
-int image_print(const IMAGE img)
+int image_fprint(const IMAGE img)
 {
         //      VERIFY ARGUMENTS
         //      ────────────────
@@ -140,15 +140,9 @@ int image_print(const IMAGE img)
         switch (img.type)
         {
         case PGM_TY:
-                return PGM_print(img);
-        // case PLAIN_PGM_TY:
-        //         return PLAIN_PGM(img);
-        // case PPM_TY:
-        //         return PPM_print(img);
-        // case PLAIN_PPM_TY:
-        //         return PLAIN_PPM(img);
+                return PGM_fprint(img);
         case ASCII_TY:
-                return ASCII_print(img);
+                return ASCII_fprint(img);
         default:
                 fprintf(stderr, "Feature not implemented yet for choose image format"
                                 " or option choosen does not match any options\n");
